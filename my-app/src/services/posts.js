@@ -9,6 +9,17 @@ export async function getPosts(){
     return posts;
 }
 
+export async function getPost(postId) {
+  const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
+    method: "GET",
+    headers: { "content-type": "application/json" },
+  });
+
+  const post = await response.json();
+
+  return post;
+}
+
 export async function savePost(post){
     try {
         const response = await fetch("http://localhost:3000/api/posts", {
@@ -24,32 +35,13 @@ export async function savePost(post){
     }
 }
 
-export async function getPost(postId){
-      const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
-        method: "GET",
-        headers: { "content-type": "application/json" },
-      });
-      
-     const post = await response.json();
-  
-     return post;
-    
-}
-
-
-
-
 export async function deletePost(postId) {
   const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
     method: "DELETE",
     headers: { "content-type": "application/json" },
   });
 
-  // const { post } = await response.json();
-
-  // const title = post._fieldsProto.title.stringValue;
-  // const body = post._fieldsProto.body.stringValue;
-
+  window.location.href = " posts"
   return response
 }
 
