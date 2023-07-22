@@ -1,7 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { signOut } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
 
 const LINKS = [
   { title: "Home", path: "/" },
@@ -25,19 +25,38 @@ function HeaderNav() {
             </li>
           ))}
         </ul>
-        {session && (
-          <>
-            <p className="m-2 ml-auto flex gap-4 text-white">
-              {session.user?.name}
-            </p>
-            <button
-              onClick={signOut}
-              className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-            >
-              Sign out
-            </button>
-          </>
-        )}
+
+        <div className="m-2 ml-auto flex gap-4 ">
+          {session ? (
+            <>
+              <Link href='/' className="text-white text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">
+                {session.user?.name}
+              </Link>
+              <button
+                onClick={signOut}
+                className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+              >
+                Sign out
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => signIn("google")}
+                className="flex text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium "
+              >
+                <img
+                  loading="lazy"
+                  className="m-1"
+                  height="20"
+                  width="20"
+                  src="https://authjs.dev/img/providers/google.svg"
+                />
+                <span className="m-1">Sign in with Google</span>
+              </button>
+            </>
+          )}
+        </div>
       </div>
     </nav>
   );

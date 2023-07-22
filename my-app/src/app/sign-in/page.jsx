@@ -5,14 +5,15 @@ export default function SignInPage() {
  
   return (
     <>
-      <h1>Sign In</h1>
-      <button
-        onClick={() => {
-           signIn("google");
-        }}
-        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded"
-      >
-        Sign In With Google
+      <button className="flex m-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
+        <img
+          loading="lazy"
+          className="m-1"
+          height="24"
+          width="24"
+          src="https://authjs.dev/img/providers/google.svg"
+        />
+        <span className="m-1">Sign in with Google</span>
       </button>
     </>
   );

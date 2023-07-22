@@ -7,13 +7,13 @@ export default async function Posts(){
 //  generatePostAI("hello", "hello").then(console.log);
    const posts = await getPosts()
    return (
-     <div>
-       <ul className="grid grid-cols-3 ">
+ 
+       <ul className="items-center m-5">
          {posts.map((post) => {
            return <PostCard post={post} />;
          })}
        </ul>
-     </div>
+     
    );
  
 }

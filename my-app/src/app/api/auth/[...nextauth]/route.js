@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import firestore from "@/fireBase/fireBaseAdmin";
+import firestore  from "@/fireBase/fireBaseAdmin";
 
 export const authOptions = {
   providers: [
@@ -11,21 +11,22 @@ export const authOptions = {
   ],
   secret: process.env.MEXT_AUTH_SECRET,
   callbacks: {
-    signIn: async ({ user }, account, profile) => {
-      if (user) {
-        const { id, ...restuser } = user;
-
+    signIn: async ({ user }) => {
+        const { id, ...restUser } = user;
         const docRef = firestore.collection("users").doc(id);
         const doc = await docRef.get();
         if (!doc.exists) {
-          await firestore.collection("users").doc(id).set(restuser);
+          await firestore.collection("users").doc(id)
+          .set({...restUser,
+                friends:[],
+                followers:[]
+               });
         }
         return true;
-      }
-      return false;
     },
+
     async session({ session, token }) {
-       session.user.id = token.sub
+       session.user.id = token.sub;
       return session;
     },
    
