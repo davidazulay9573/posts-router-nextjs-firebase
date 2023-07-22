@@ -5,9 +5,8 @@ export const dynamic = 'force-dynamic';
 
 export default async function Posts(){
 //  generatePostAI("hello", "hello").then(console.log);
-   const posts = await getPosts()
+   const posts = await (await getPosts()).data
    return (
- 
        <ul className="items-center m-5">
          {posts.map((post) => {
            return <PostCard post={post} />;

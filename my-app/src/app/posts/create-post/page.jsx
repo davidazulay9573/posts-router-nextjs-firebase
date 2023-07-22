@@ -15,35 +15,29 @@ function AddCard() {
   const formik = useFormik({
     validateOnMount: true,
     initialValues: {
-     title:'',
-     body:'',
-     image: '',
+      title: "",
+      body: "",
+      image: "",
     },
     validate(values) {
       return formikValidation(values)(
         Joi.object({
           title: Joi.string().min(2).max(255).required().label("Title"),
-          body: Joi.string()
-            .min(2)
-            .max(1024)
-            .required()
-            .label("Body"),
-          
+          body: Joi.string().min(2).max(1024).required().label("Body"),
+
           image: Joi.string().min(11).max(1024).allow("").label("Image"),
         })
       );
     },
     onSubmit: async (values) => {
       await savePost(values);
-       window.location.href = "/posts";
+      window.location.href = "/posts";
     },
   });
 
   return (
     <div className="flex items-center">
-      <div className="p-24">
-
-      </div>
+      <div className="p-24"></div>
       <Form inputs={inputs} formik={formik} buttonTitle="Add-Card"></Form>
       <div className="p-24"> </div>
     </div>

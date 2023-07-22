@@ -1,5 +1,5 @@
 import httpService from "./httpService";
 
-export async function getUsers(){
+export function getUsers(){
   return httpService.get('/users');
 }

@@ -7,7 +7,7 @@ import Joi from "joi";
 import { formikValidation, passwordRegex } from "@/utils/formikValidation";
 import Link from "next/link";
 
-function SignIn() {
+function SignUp() {
   const router = useRouter();
 
   const inputs = [
@@ -43,7 +43,7 @@ function SignIn() {
       );
     },
     onSubmit: async (values) => {
-      const { result, error } = await signIn(values.email, values.password);
+      const { result, error } = await signUp(values.email, values.password);
 
       if (error) {
         return console.log(error);
@@ -56,22 +56,12 @@ function SignIn() {
   });
   return (
     <div className="container-md w-50 text-center">
-      <Form inputs={inputs} formik={formik} buttonTitle="Sign-In"></Form>
-      <button className="flex m-4 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 border border-gray-400 rounded shadow">
-        <img
-          loading="lazy"
-          className="m-1"
-          height="24"
-          width="24"
-          src="https://authjs.dev/img/providers/google.svg"
-        />
-        <span className="m-1">Sign in with Google</span>
-      </button>
+      <Form inputs={inputs} formik={formik} buttonTitle="Sign-Up"></Form>
       <p>
-        Don't have an account yet? <Link href="/sign-up">Sign-up</Link>
+        You already have an account? <Link href="/sign-in">Sign-in</Link>
       </p>
     </div>
   );
 }
 
-export default SignIn;
+export default SignUp;

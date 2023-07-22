@@ -1,7 +1,8 @@
 import { getPost ,deletePost} from "@/services/posts";
 export default async function Post(props){
-   const { postId } = props.params;
-   const {title ,body}  = await getPost(postId);
+  
+  const { postId } = props.params;
+   const {title ,body}  = (await getPost(postId)).data;
 
    
     return (
