@@ -20,3 +20,7 @@ export async function DELETE(request,context){
    return NextResponse.json(response)
 }
 
+export async function PUT(request,context){
+  const {postId} = context.params;
+}
+

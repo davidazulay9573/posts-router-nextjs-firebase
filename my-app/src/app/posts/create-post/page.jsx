@@ -4,8 +4,6 @@ import { useFormik } from "formik";
 import Joi from "joi";
 import formikValidation from "@/utils/formikValidation";
 import { savePost } from "@/services/posts";
-import { useRouter } from "next/router";
-
 
 function AddCard() {
   const inputs = [
@@ -42,8 +40,12 @@ function AddCard() {
   });
 
   return (
-    <div className="w-full max-w-xs">
+    <div className="flex items-center">
+      <div className="p-24">
+
+      </div>
       <Form inputs={inputs} formik={formik} buttonTitle="Add-Card"></Form>
+      <div className="p-24"> </div>
     </div>
   );
 }

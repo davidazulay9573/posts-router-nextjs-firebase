@@ -4,7 +4,7 @@ import Input from "./Input";
 function Form({ inputs = [], formik, buttonTitle }) {
   return (
     <form
-      className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4"
+      className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4  w-full "
       noValidate
       onSubmit={formik.handleSubmit}
     >
