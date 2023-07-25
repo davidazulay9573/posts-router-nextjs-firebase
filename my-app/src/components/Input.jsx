@@ -4,7 +4,7 @@ function Input({ lable, name, error, ...rest }) {
       <label htmlFor={name} className="block text-gray-700 text-sm font-bold mb-2">
         {lable}
       </label>
-      <label ></label>
+  
       {error && <span className="text-red-500">*</span>}
       <input
         {...rest}

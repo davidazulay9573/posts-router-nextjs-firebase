@@ -1,18 +1,20 @@
 import { getPosts } from "@/services/posts";
 import PostCard from "@/components/postCard";
 import generatePostAI from "@/open-ai/generatePostAI";
-export const dynamic = 'force-dynamic';
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
-export default async function Posts(){
-//  generatePostAI("hello", "hello").then(console.log);
-   const posts = await (await getPosts()).data
+export default async function Feed(){
+  const session = await getServerSession(authOptions);
+   const posts = (await getPosts()).data;
+   if(!session){
+    return <p>You need sign-up</p>
+   }
    return (
-       <ul className="items-center m-5">
-         {posts.map((post) => {
-           return <PostCard post={post} />;
-         })}
-       </ul>
-     
+     <div className="flex flex-col items-center justify-center space-y-6">
+       {posts.map((post) => {
+         return <PostCard post={post} />;
+       })}
+     </div>
    );
- 
 }

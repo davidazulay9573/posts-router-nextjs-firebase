@@ -4,8 +4,11 @@ import { useFormik } from "formik";
 import Joi from "joi";
 import formikValidation from "@/utils/formikValidation";
 import { savePost } from "@/services/posts";
-
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 function AddCard() {
+  const {data: session} = useSession();
+  const router = useRouter();
   const inputs = [
     { name: "title", lable: "Title", type: "text" },
     { name: "body", lable: "Body", type: "text" },
@@ -19,19 +22,21 @@ function AddCard() {
       body: "",
       image: "",
     },
+
     validate(values) {
       return formikValidation(values)(
         Joi.object({
           title: Joi.string().min(2).max(255).required().label("Title"),
           body: Joi.string().min(2).max(1024).required().label("Body"),
-
           image: Joi.string().min(11).max(1024).allow("").label("Image"),
         })
       );
     },
+
     onSubmit: async (values) => {
-      await savePost(values);
-      window.location.href = "/posts";
+      const {name, id} = session.user;
+      await savePost({...values, userUp:{name, id}});
+       router.push("/posts");
     },
   });
 

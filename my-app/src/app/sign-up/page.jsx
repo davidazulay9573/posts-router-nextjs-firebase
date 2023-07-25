@@ -1,11 +1,12 @@
 "use client";
-
+import { signUp } from "@/services/auth";
 import { useRouter } from "next/navigation";
 import Form from "@/components/Form";
 import { useFormik } from "formik";
 import Joi from "joi";
 import { formikValidation, passwordRegex } from "@/utils/formikValidation";
 import Link from "next/link";
+import { toast} from "react-toastify";
 
 function SignUp() {
   const router = useRouter();
@@ -43,15 +44,12 @@ function SignUp() {
       );
     },
     onSubmit: async (values) => {
-      const { result, error } = await signUp(values.email, values.password);
-
-      if (error) {
-        return console.log(error);
-      }
-
-      // else successful
-      console.log(result);
-      return router.push("/");
+         try {
+            await signUp(values);
+           toast.success("Signed up successfully");
+         } catch (error) {
+           toast.error(error.response.data);
+         }
     },
   });
   return (

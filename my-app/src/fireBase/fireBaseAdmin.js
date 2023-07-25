@@ -22,4 +22,4 @@ getApps().length === 0
     })
   : getApps()[0];
 
-export default admin.firestore();
+export default admin

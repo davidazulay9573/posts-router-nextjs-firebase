@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 const API_URL = "http://localhost:3000/api";
 
 axios.defaults.baseURL = API_URL;
@@ -11,9 +10,9 @@ export function setCommonHeader(key, value) {
 
 axios.interceptors.response.use(null, (error) => {
   if (error.code === "ERR_NETWORK") {
-    toast.error("Check your Internet connection");
+    return "Check your Internet connection" 
   } else if (error.response && error.response.status === 403) {
-    toast.error("An unexpected error occurred");
+    return "An unexpected error occurred";
   }
   return Promise.reject(error);
 });

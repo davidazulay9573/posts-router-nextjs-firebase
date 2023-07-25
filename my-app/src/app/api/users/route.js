@@ -1,7 +1,9 @@
-import firestore from "@/fireBase/fireBaseAdmin";
+import admin from "@/fireBase/fireBaseAdmin";
 import { NextResponse } from "next/server";
+const db = admin.firestore();
+
 export async function GET(){
-   const snapshot = await firestore.collection('users').get()
+   const snapshot = await db.collection('users').get()
    const users = snapshot.docs.map((user) => {
     const { name} = user.data()
     return {name}
