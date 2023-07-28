@@ -1,9 +1,9 @@
 'use client' 
 
-function LikeIcon({targetLike}){
+function LikeIcon({targetLike,size = 24}){
    
   return (
-    <>
+   
       <span>
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -11,7 +11,8 @@ function LikeIcon({targetLike}){
           viewBox="0 0 24 24"
           strokeWidth={1.5}
           stroke="currentColor"
-          className="w-6 h-6"
+          // className={`w-${size} h-${size}`}
+          style={{ width: `${size}px`, height: `${size}px` }}
         >
           <path
             strokeLinecap="round"
@@ -20,7 +21,7 @@ function LikeIcon({targetLike}){
           />
         </svg>
       </span>
-    </>
+  
   );
 }
 

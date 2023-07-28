@@ -1,6 +1,5 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import Credentials from "next-auth/providers/credentials";
 import admin  from "@/fireBase/fireBaseAdmin";
 
 const db = admin.firestore()
@@ -10,19 +9,7 @@ export const authOptions = {
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
     }),
-    Credentials({
-      name: "Credentials",
-      authorize: async (credentials) => {
-        const { email, password } = credentials;
-        try {
-          const { uid } = await admin.auth().getUserByEmail(email);
-          const idToken = await admin.auth().createCustomToken(uid);
-          return Promise.resolve({ idToken });
-        } catch (err) {
-          return Promise.resolve(null);
-        }
-      },
-    }),
+    
   ],
   secret: process.env.MEXT_AUTH_SECRET,
   callbacks: {
@@ -35,7 +22,7 @@ export const authOptions = {
         await db
           .collection("users")
           .doc(id)
-          .set({ ...restUser, friends: [], followers: [] });
+          .set({ ...restUser, friendRequests:[], friends: [], followers: [] });
       }
       return true;
     },

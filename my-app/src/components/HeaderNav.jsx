@@ -3,54 +3,27 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { signIn, signOut } from "next-auth/react";
 import { useState } from "react";
-const LINKS = [
-  { title: "Home", path: "/" },
-  { title: "About", path: "/about" },
-  { title: "Posts", path: "/posts" },
-  { title: "Create-post", path: "/posts/create-post" },
-];
+import { usePathname } from "next/navigation";
+
 
 function HeaderNav() {
+   const pathname = usePathname();
+  
   const [isOpen, setIsOpen] = useState(false);
 
   const { data: session } = useSession();
+  const links = session
+    ? [
+        { title: "Home", path: "/" },
+        { title: "About", path: "/about" },
+        { title: "Posts", path: "/posts" },
+        { title: "Users", path: "/users" },
+      ]
+    : [
+        { title: "Home", path: "/" },
+        { title: "About", path: "/about" },
+      ];
   return (
-    // <nav className="bg-gray-800 px-5 py-5">
-    //   <div className="flex mx-auto max-w-5xl items-center">
-
-    //     <div className="m-2 ml-auto flex gap-4 ">
-    //       {session ? (
-    //         <>
-    //           <Link href='/' className="text-white text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium">
-    //             {session.user?.name}
-    //           </Link>
-    //           <button
-    //             onClick={signOut}
-    //             className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
-    //           >
-    //             Sign out
-    //           </button>
-    //         </>
-    //       ) : (
-    //         <>
-    //           <button
-    //             onClick={() => signIn("google")}
-    //             className="flex text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium "
-    //           >
-    //             <img
-    //               loading="lazy"
-    //               className="m-1"
-    //               height="20"
-    //               width="20"
-    //               src="https://authjs.dev/img/providers/google.svg"
-    //             />
-    //             <span className="m-1">Sign in with Google</span>
-    //           </button>
-    //         </>
-    //       )}
-    //     </div>
-    //   </div>
-    // </nav>
     <nav className="bg-gray-800">
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
         <div className="relative flex items-center justify-between h-16">
@@ -90,7 +63,7 @@ function HeaderNav() {
 
           <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
             <div className="flex-shrink-0">
-              <img
+              {/* <img
                 className="block lg:hidden h-8 w-auto"
                 src="/img/logo.svg"
                 alt="logo"
@@ -99,14 +72,18 @@ function HeaderNav() {
                 className="hidden lg:block h-8 w-auto"
                 src="/img/logo.svg"
                 alt="logo"
-              />
+              /> */}
             </div>
             <div className="hidden sm:block sm:ml-6">
               <ul className="flex gap-4">
-                {LINKS.map((item) => (
+                {links.map((item) => (
                   <li
                     key={item.path}
-                    className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                    className={
+                      pathname == item.path
+                        ? "bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium "
+                        : "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                    }
                   >
                     <Link href={item.path}>{item.title}</Link>
                   </li>
@@ -114,16 +91,57 @@ function HeaderNav() {
               </ul>
             </div>
           </div>
+          {session ? (
+            <>
+              <button
+                onClick={signOut}
+                className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+              >
+                Sign out
+              </button>
+              <Link
+                href="/personal"
+               
+              >
+                <img
+                  className="w-8 h-8 rounded-full object-cover"
+                  src={session?.user.image}
+                  alt={session?.user.name}
+                />
+              </Link>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => signIn("google")}
+                className="flex text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium "
+              >
+                <img
+                  loading="lazy"
+                  className="m-1"
+                  height="20"
+                  width="20"
+                  src="https://authjs.dev/img/providers/google.svg"
+                />
+                <span className="m-1">Sign in with Google</span>
+              </button>
+            </>
+          )}
         </div>
       </div>
 
-      <div className={`${isOpen ? "block" : "hidden"} sm:hidden`}>
+      <div className={`flex ${isOpen ? "block" : "hidden"} sm:hidden`}>
         <div className="px-2 pt-2 pb-3">
-          <ul className="flex gap-4">
-            {LINKS.map((item) => (
+          <ul className="flex flex-col gap-4">
+            {links.map((item) => (
               <li
+                onClick={() => setIsOpen(!isOpen)}
                 key={item.path}
-                className="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                className={
+                  pathname == item.path
+                    ? "bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium "
+                    : "text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                }
               >
                 <Link href={item.path}>{item.title}</Link>
               </li>

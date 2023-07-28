@@ -3,3 +3,12 @@ import httpService from "./httpService";
 export function getUsers(){
   return httpService.get('/users');
 }
+
+export function getUser(userId){
+  return httpService.get(`/users/${userId}`);
+}
+
+export function updateUser(id, user){
+  return httpService.put(`/users/${id}`,user);
+  
+}

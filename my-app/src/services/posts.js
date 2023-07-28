@@ -1,6 +1,7 @@
 import httpService from "./httpService";
 
 export function getPosts(){
+  
   return httpService.get('/posts');
 }
 

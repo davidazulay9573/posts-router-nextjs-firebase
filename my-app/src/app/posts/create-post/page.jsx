@@ -1,52 +1,62 @@
 "use client";
-import Form from "@/components/Form";
 import { useFormik } from "formik";
 import Joi from "joi";
 import formikValidation from "@/utils/formikValidation";
 import { savePost } from "@/services/posts";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-function AddCard() {
-  const {data: session} = useSession();
-  const router = useRouter();
-  const inputs = [
-    { name: "title", lable: "Title", type: "text" },
-    { name: "body", lable: "Body", type: "text" },
-    { name: "image", lable: "Image", type: "text" },
-  ];
 
+function CreatePost() {
+  const {data: session} = useSession();
   const formik = useFormik({
     validateOnMount: true,
     initialValues: {
-      title: "",
       body: "",
-      image: "",
     },
 
     validate(values) {
       return formikValidation(values)(
         Joi.object({
-          title: Joi.string().min(2).max(255).required().label("Title"),
           body: Joi.string().min(2).max(1024).required().label("Body"),
-          image: Joi.string().min(11).max(1024).allow("").label("Image"),
         })
       );
     },
 
-    onSubmit: async (values) => {
-      const {name, id} = session.user;
-      await savePost({...values, userUp:{name, id}});
-       router.push("/posts");
+    onSubmit: async ({body}) => {
+      await savePost({body, userUp:session.user});
+    
+      window.location.href = '/posts'
     },
   });
 
   return (
-    <div className="flex items-center">
-      <div className="p-24"></div>
-      <Form inputs={inputs} formik={formik} buttonTitle="Add-Card"></Form>
-      <div className="p-24"> </div>
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="lg:w-1/3 lg:mx-auto">
+        <form
+          onSubmit={formik.handleSubmit}
+          className="bg-white shadow rounded px-8 pt-6 pb-8 mb-4"
+        >
+          <div className="mb-6">
+            <textarea
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="inline-full-name"
+              type="text"
+              placeholder="Your Post..."
+              {...formik.getFieldProps("body")}
+            />
+          </div>
+          <div className="flex items-center justify-between">
+            <button
+              disabled={!formik.isValid}
+              className="bg-purple-500 hover:bg-purple-400 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              type="submit"
+            >
+              Add Post
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
 
-export default AddCard;
+export default CreatePost;

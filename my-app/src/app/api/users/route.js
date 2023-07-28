@@ -4,9 +4,14 @@ const db = admin.firestore();
 
 export async function GET(){
    const snapshot = await db.collection('users').get()
-   const users = snapshot.docs.map((user) => {
-    const { name} = user.data()
-    return {name}
+   const users = snapshot.docs.map((doc) => {
+    return {
+      id: doc.id,
+      ...doc.data(),
+    };
    })
-    return NextResponse.json(users)
+    return NextResponse.json(users);
 }
+
+
+
