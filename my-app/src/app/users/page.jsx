@@ -4,7 +4,6 @@ import { getFriends } from "@/services/users.server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 
-
 export default async function Users(){
    const session = await getServerSession(authOptions);
    const users = await (await getUsers()).data;

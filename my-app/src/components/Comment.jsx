@@ -2,7 +2,10 @@
 import LikeIcon from "./LikeIcon";
 import dateFormat from "@/utils/dateFormat";
 import Link from "next/link";
+import usePost from "@/hooks/usePost";
 function Comment({post, comment}){  
+  const [likes, comments, isLiked, handleLike, addComment] = usePost(post,comment);
+
   return (
     <div className="bg-white dark:bg-gray-800 text-black dark:text-gray-200 p-4 antialiased flex max-w-lg">
       <Link href={`/users/${comment.userUp.id}`}>
@@ -26,9 +29,9 @@ function Comment({post, comment}){
         </div>
         <div className="bg-white dark:bg-gray-700 border border-white dark:border-gray-700 rounded-full float-right -mt-8 mr-0.5 flex shadow items-center ">
           <span className=" flex items-center space-x-2 text-purple-600 text-sm ml-1 pr-1.5 text-gray-500 ">
-            {comment.likes.length}
-            <button>
-              <LikeIcon size={18} />
+            {likes.length}
+            <button onClick={handleLike}>
+              <LikeIcon size={18} targetLike={isLiked() ? "" : "none"} />
             </button>
           </span>
         </div>

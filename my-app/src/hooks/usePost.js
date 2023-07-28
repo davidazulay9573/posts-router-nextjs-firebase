@@ -1,50 +1,56 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { updatePost, deletePost } from "@/services/posts";
 import { v4 as uuid } from "uuid";
 
-function usePost(post) {
-
+function usePost(post, comment) {
   const { data: session } = useSession();
-  const [likes, setLikes] = useState(post.likes);
-  const [comments, setComments] = useState( post.comments );
 
-  useEffect(() => {
-    if (session) {
-      setLikes(post.likes);
-      setComments(post.comments);
-    }
-  }, [
-    post.likes,
-    post.comments,
-    session,
-  ]);
+  const initialLikes = comment ? comment.likes : post.likes;
+  const initialComments = comment ? comment.comments : post.comments 
+  
+  const [likes, setLikes] = useState(initialLikes);
+  const [comments, setComments] = useState( initialComments);
+  
 
-  function isLiked() {
+  const isLiked = () => {
     return likes.some((like) => like.id == session?.user.id);
   }
-  async function handleLike() {
-    if (!isLiked()) {
-       
+  
+  const savePost = async (newLikes) => {
+    return await updatePost(post.id, {
+      ...post,
+      likes: newLikes,
+    });
+  };
+ 
+  const saveComment = async (newLikes) => {
+    return await updatePost(post.id, {
+      ...post,
+      comments: [
+        ...post.comments.map((com) => {
+          if (com.id === comment.id) {
+            return { ...com, likes: newLikes };
+          }
+          return com;
+        }),
+      ],
+    });
+  }
+  
+  const handleLike = async() =>  {
+    if (!isLiked()) {   
       const newLikes = [...likes, session.user];
-      await updatePost(post.id, {
-        ...post,
-        likes: newLikes,
-      });
+      comment ? await saveComment(newLikes) : await savePost(newLikes);
       setLikes(newLikes);
     } else {
       const newLikes = likes.filter((like) => like.id != session.user.id);
-
-      await updatePost(post.id, {
-        ...post,
-        likes: newLikes,
-      });
-
+      comment ? await saveComment(newLikes) : await savePost(newLikes);
       setLikes(newLikes);
     }
   }
-
-  async function addComment(comment) {
+  
+  const addComment = async (comment) => {
     const newComments = [
       ...comments,
       {

@@ -4,14 +4,14 @@ import admin  from "@/fireBase/fireBaseAdmin";
 
 const db = admin.firestore()
 export const authOptions = {
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
       clientSecret: process.env.GOOGLE_SECRET,
     }),
-    
   ],
-  secret: process.env.MEXT_AUTH_SECRET,
+  
   callbacks: {
     signIn: async ({ user }) => {
       const { id, email, ...restUser } = user;
@@ -22,16 +22,17 @@ export const authOptions = {
         await db
           .collection("users")
           .doc(id)
-          .set({ ...restUser, friendRequests:[], friends: [], followers: [] });
+          .set({ ...restUser, friendRequests: [], friends: [], followers: [] });
       }
       return true;
     },
-    
+
     session: async ({ session, token }) => {
       session.user.id = token.sub;
       return session;
     },
   },
+  
 };
 
 const handler = NextAuth(authOptions);
