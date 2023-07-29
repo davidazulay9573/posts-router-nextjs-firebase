@@ -1,8 +1,8 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
-import admin  from "@/fireBase/fireBaseAdmin";
+import admin from "@/fireBase/fireBaseAdmin";
 
-const db = admin.firestore()
+const db = admin.firestore();
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
@@ -11,7 +11,7 @@ export const authOptions = {
       clientSecret: process.env.GOOGLE_SECRET,
     }),
   ],
-  
+
   callbacks: {
     signIn: async ({ user }) => {
       const { id, email, ...restUser } = user;
@@ -29,10 +29,10 @@ export const authOptions = {
 
     session: async ({ session, token }) => {
       session.user.id = token.sub;
+     
       return session;
     },
   },
-  
 };
 
 const handler = NextAuth(authOptions);

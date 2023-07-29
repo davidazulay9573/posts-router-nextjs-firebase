@@ -17,35 +17,45 @@ export async function getFriends(userId){
  } catch (error) {
   console.error(error);
  }
-   
+  return [];
 }
 
-async function getFollowers(userId){
-  try {
-   const querySnapshot = await usersRef
+export async function getFollowers(userId){
+ try {
+   const snapshot = await db
+     .collection("users")
      .where("followers", "array-contains", userId)
      .get();
-
-   querySnapshot.forEach((doc) => {
-     console.log(doc.id, " => ", doc.data());
+   const friends = snapshot.docs.map((doc) => {
+     return {
+       id: doc.id,
+       ...doc.data(),
+     };
    });
+   return friends;
  } catch (error) {
-   console.log("Error getting documents: ", error);
+   console.error(error);
  }
+ return [];
 }
 
-async function getFriendRequests(userId){
-   try {
-   const querySnapshot = await usersRef
-     .where("friendRequests", "array-contains", userId)
-     .get();
-
-   querySnapshot.forEach((doc) => {
-     console.log(doc.id, " => ", doc.data());
-   });
- } catch (error) {
-   console.log("Error getting documents: ", error);
- }
+export async function getFriendRequests(userId){
+  try {
+    const snapshot = await db
+      .collection("users")
+      .where("friendRequests", "array-contains", userId)
+      .get();
+    const friends = snapshot.docs.map((doc) => {
+      return {
+        id: doc.id,
+        ...doc.data(),
+      };
+    });
+    return friends;
+  } catch (error) {
+    console.error(error);
+  }
+  return [];
 }
 
 
