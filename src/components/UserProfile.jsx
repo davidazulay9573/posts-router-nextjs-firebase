@@ -38,11 +38,7 @@ const UserProfile = ({ user}) => {
 
       <div className="mt-4 text-center">
         <h2 className="text-xl font-semibold text-gray-800">{user.name}</h2>
-        <p className="mt-1 text-gray-500">{user.email}</p>
-        <div className="mt-6">
-          <h2 className="text-lg font-semibold text-gray-800">Bio</h2>
-          <p className="mt-2 text-gray-600">{user?.bio}</p>
-        </div>
+        <p className="mt-2 text-gray-600">{user?.bio}</p>
       </div>
 
       <div className="mt-4 flex justify-center">
@@ -117,7 +113,7 @@ const UserProfile = ({ user}) => {
           ))}
         <button
           onClick={() => {
-            setFollowersView((friendsView) => !friendsView);
+            setFollowersView((followersView) => !followersView);
           }}
           className="m-2"
         >
@@ -127,7 +123,7 @@ const UserProfile = ({ user}) => {
           user.followers.map((user) => (
             <UserSimpleCard key={user.id} user={user} />
           ))}
-        <button className="m-2">{user?.posts.length} Posts</button>
+        {/* <button className="m-2">{user?.posts.length} Posts</button> */}
       </div>
     </div>
   );

@@ -1,5 +1,7 @@
 import httpService from "./httpService";
 
+httpService.setCommonHeader("secret", process.env.NEXT_PUBLIC_API_SECRET);
+
 export function getPosts(){
   
   return httpService.get('/posts');

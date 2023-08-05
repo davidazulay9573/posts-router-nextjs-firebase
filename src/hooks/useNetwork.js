@@ -12,29 +12,41 @@ function useNetwork(user) {
   const [followers, setFollowers] = useState(user.followers);
   const [friendRequests, setFriendRequests] = useState(user.friendRequests);
 
+
   useEffect(() => {
     (async () => {
-      setUserSession((await getUser(session?.user.id)).data);
+      setUserSession((await getUser(session?.user.id)).data.user);
     })();
   }, [session]);
 
   const isFriend = () => {
-    return friends.includes(session?.user.id);
+    return friends.some((friend) => friend.id === session?.user.id);
   };
   const isFollow = () => {
-    return followers.includes(session?.user.id);
+    return followers.some((follower) => follower.id === session?.user.id);
   };
   const isSessionSentFriendRequest = () => {
-    return friendRequests.includes(session?.user.id);
+    return friendRequests.some((reqFr) => reqFr.id === session?.user.id);
   };
   const isUserSentFriendRequest = () => {
-    return userSession?.friendRequests?.includes(user.id);
+    return userSession?.friendRequests?.some((reqFr) => reqFr.id === user.id);
   };
+
+
 
   const sendFriendRequest = async () => {
     const newFriendRequests = isSessionSentFriendRequest()
-      ? [...friendRequests.filter((user) => user.id === session?.user.id)]
-      : [...friendRequests, session?.user.id];
+      ? friendRequests.filter((el) => el.id !== session?.user.id)
+      : [
+          ...friendRequests,
+          {
+            name: userSession.name,
+            image: userSession.image,
+            id: userSession.id,
+          },
+        ];
+
+        console.log(newFriendRequests);
     try {
       await updateUser(user.id, {
         ...user,
@@ -48,8 +60,8 @@ function useNetwork(user) {
 
   const sendFollowing = async () => {
     const newFollowers = isFollow()
-      ? [...followers.filter((user) => user.id === session?.user.id)]
-      : [...followers, session?.user.id];
+      ? [...followers.filter((user) => user.id !== session?.user.id)]
+      : [...followers, { name:userSession.name, image:userSession.image, id:userSession.id }];
     try {
       await updateUser(user.id, {
         ...user,
@@ -64,24 +76,30 @@ function useNetwork(user) {
     try {
       await updateUser(user.id, {
         ...user,
-        friends: [...friends, userSession.id],
+        friends: [...friends, { name:userSession.name, image:userSession.image, id:userSession.id } ],
       });
       await updateUser(userSession.id, {
         ...userSession,
-        friends: [...friends, user.id],
+        friends: [...friends, { name:user.name, image:user.image, id:user.id }],
         friendRequests: [
-          ...userSession.friendRequests.filter((req) => req.id === user.id),
+          ...userSession.friendRequests.filter((req) => req.id !== user.id),
         ],
       });
       setUserSession({
         ...userSession,
         friendRequests: [
-          ...userSession.friendRequests.filter((req) => req.id === user.id),
+          ...userSession.friendRequests.filter((req) => req.id !== user.id),
         ],
       });
-      setFriends([...friends, userSession.id]);
-      console.log(friends);
-      console.log(userSession);
+      setFriends([
+        ...friends,
+        {
+          name: userSession.name,
+          image: userSession.image,
+          id: userSession.id,
+        },
+      ]);
+    
     } catch (error) {
       console.error(error);
     }
@@ -93,16 +111,16 @@ function useNetwork(user) {
     try {
       await updateUser(user.id, {
         ...user,
-        friends: [...friends.filter((friend) => friend.id === userSession.id)],
+        friends: [...friends.filter((friend) => friend.id !== userSession.id)],
       });
       await updateUser(userSession.id, {
         ...userSession,
         friends: [
-          ...userSession.friends.filter((friend) => friend.id === user.id),
+          ...userSession.friends.filter((friend) => friend.id !== user.id),
         ],
       });
 
-      setFriends(friends.filter((friend) => friend.id === userSession.id));
+      setFriends(friends.filter((friend) => friend.id !== userSession.id));
     } catch (error) {}
   };
   return [

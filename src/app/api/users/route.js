@@ -1,8 +1,15 @@
-import admin from "@/fireBase/fireBaseAdmin";
 import { NextResponse } from "next/server";
+import { headers } from "next/headers";
+import admin from "@/fireBase/fireBaseAdmin";
+
+
 const db = admin.firestore();
 
 export async function GET(){
+   const secret = headers().get("secret");
+   if (secret !== process.env.NEXT_PUBLIC_API_SECRET) {
+     return new Response("Invalid secret", { status: 402 });
+   }
    const snapshot = await db.collection('users').get()
    const users = snapshot.docs.map((doc) => {
     return {

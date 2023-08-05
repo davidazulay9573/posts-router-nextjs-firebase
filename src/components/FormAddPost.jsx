@@ -5,6 +5,7 @@ import formikValidation from "@/utils/formikValidation";
 import { savePost } from "@/services/posts";
 import { useSession } from "next-auth/react";
 import generatePostAI from "@/open-ai/generatePostAI";
+
 function FormAddPost() {
   const { data: session } = useSession();
   const formik = useFormik({

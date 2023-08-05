@@ -7,8 +7,9 @@ import UserSimpleCard from "./UserSimpleCard";
 import { ChatIcon, HeartIcon } from "@heroicons/react/solid";
 import Comments from "./Comments";
 import usePost from "@/hooks/usePost";
-
+import { useSession } from "next-auth/react";
 export default function PostCard({post}) {
+  const {data:session} = useSession();
   
   const [
     likes,
@@ -29,7 +30,14 @@ export default function PostCard({post}) {
        <div className="border-b border-gray-200 mb-4">
          <div className="flex justify-between items-center text-gray-500 font-semibold m-1">
            <div className="m-1">{dateFormat(post.createdAt)}</div>
-           <Link href={`/users/${post.userUp.id}`}>
+           
+           <Link
+             href={
+               session?.user.id == post.userUp.id
+                 ? "/personal"
+                 : `/users/${post.userUp.id}`
+             }
+           >
              <img className="rounded-full h-10 w-10" src={post.userUp.image} />
            </Link>
          </div>

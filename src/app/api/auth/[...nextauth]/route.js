@@ -24,6 +24,7 @@ export const authOptions = {
           .doc(id)
           .set({
             ...restUser,
+            bio:'',
             friendRequests: [],
             sentFriendRequests:[] ,
             friends: [],

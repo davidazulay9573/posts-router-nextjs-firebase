@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 
 export const metadata = {
+
   title: "Posts-Router",
   description: "",
 };
@@ -16,7 +17,6 @@ export default async function RootLayout({ children }) {
     <html lang="en">
       <SessionProvider session={session}>
         <body className="flex flex-col min-h-screen">
-         
           <HeaderNav />
           <div className="flex-grow p-4">{children}</div>
           <Footer />

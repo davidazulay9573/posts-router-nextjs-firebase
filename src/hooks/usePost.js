@@ -10,7 +10,7 @@ function usePost(post) {
   const [comments, setComments] = useState(post.comments);
 
   const isPostLiked = () => {
-    return likes.some((like) => like.id == session?.user.id);
+    return likes.some((like) => like.id === session?.user.id);
   };
 
   const isCommentLiked = (commentId) => {
