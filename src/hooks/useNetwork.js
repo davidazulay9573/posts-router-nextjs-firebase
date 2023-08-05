@@ -1,3 +1,4 @@
+
 import { updateUser } from "@/services/users";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -113,6 +114,7 @@ function useNetwork(user) {
     sendFriendRequest,
     approveFriendRequest,
     removeFriend,
+    followers,
   ];
 }
 

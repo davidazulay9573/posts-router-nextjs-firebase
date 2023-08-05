@@ -1,6 +1,7 @@
 "use client";
 import {
   PlusIcon,
+  MinusIcon,
   UserAddIcon,
   UserRemoveIcon,
   CheckCircleIcon,
@@ -13,14 +14,10 @@ import useNetwork from "@/hooks/useNetwork";
 export function UserCard({ user }) {
   const  [
     isFollow,
-    isFriend,
-    isSessionSentFriendRequest,
-    isUserSentFriendRequest,
     sendFollowing,
-    sendFriendRequest,
-    approveFriendRequest,
-    removeFriend,
+    followers
   ] = useNetwork(user);
+  
   return (
     <div className="flex items-center justify-between space-x-4 p-2 rounded shadow-md m-2">
       <Link href={`/users/${user.id}`}>
@@ -37,71 +34,23 @@ export function UserCard({ user }) {
       </Link>
 
       <div className="flex space-x-2">
-        <div className="flex flex-col items-center px-2 py-1 text-xs rounded shadow">
-          {isUserSentFriendRequest() && (
-            <>
-              <p className="m-1"> Friend request</p>
-              <button
-                onClick={approveFriendRequest}
-                className="flex items-center m-1 px-2 py-1 text-xs text-white bg-green-500 hover:bg-green-600 rounded shadow"
-              >
-                <CheckCircleIcon className="h-4 w-4 mr-1" />
-                Approve
-              </button>
-              <button
-                onClick={sendFriendRequest}
-                className="flex items-center m-1 px-2 py-1 text-xs text-white bg-green-500 hover:bg-green-600 rounded shadow"
-              >
-                <XIcon className="h-4 w-4 mr-1" />
-                Reject
-              </button>
-            </>
-          )}
-          {isFriend() && (
-            <button
-              onClick={removeFriend}
-              className="flex items-center px-2 py-1 text-xs text-white bg-green-500 hover:bg-green-600 rounded shadow"
-            >
-              <UserRemoveIcon className="h-4 w-4 mr-1" />
-              Remove friend
-            </button>
-          )}
-          {!isFriend() && !isSessionSentFriendRequest() && !isUserSentFriendRequest() && (
-            <button
-              onClick={sendFriendRequest}
-              className="flex items-center px-2 py-1 text-xs text-white bg-green-500 hover:bg-green-600 rounded shadow"
-            >
-              <UserAddIcon className="h-4 w-4 mr-1" />
-              Send friends
-            </button>
-          )}
-
-          {isSessionSentFriendRequest() && !isFriend() && (
-            <button
-              onClick={sendFriendRequest}
-              className="flex items-center px-2 py-1 text-xs text-white bg-green-500 hover:bg-green-600 rounded shadow"
-            >
-              <ArrowCircleRightIcon className="h-4 w-4 mr-1" />
-              Cancel
-            </button>
-          )}
-          {isFollow() ? (
+        <div className="flex flex-col  ">
+        
             <button
               onClick={sendFollowing}
-              className="flex items-center m-1 px-2 py-1 text-xs text-white bg-indigo-500 hover:bg-indigo-600 rounded shadow"
+              className="flex items-center px-2 py-1 m-1 text-xs text-white bg-indigo-500 hover:bg-indigo-600 rounded shadow"
             >
-              <UserRemoveIcon className="h-4 w-4 mr-1" />
-              Un Follow
+              {isFollow() ? (
+                <>
+                  <MinusIcon className="h-5 w-5 mr-2" /> Un-Follow
+                </>
+              ) : (
+                <>
+                  <PlusIcon className="h-5 w-5 mr-2" /> Follow
+                </>
+              )}
             </button>
-          ) : (
-            <button
-              onClick={sendFollowing}
-              className="flex items-center m-1 px-2 py-1 text-xs text-white bg-indigo-500 hover:bg-indigo-600 rounded shadow"
-            >
-              <PlusIcon className="h-4 w-4 mr-1" />
-              Follow
-            </button>
-          )}
+          
         </div>
       </div>
     </div>

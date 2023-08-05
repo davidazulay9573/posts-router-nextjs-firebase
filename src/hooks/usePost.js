@@ -3,54 +3,61 @@ import { useSession } from "next-auth/react";
 import { updatePost, deletePost } from "@/services/posts";
 import { v4 as uuid } from "uuid";
 
-function usePost(post, comment) {
+function usePost(post) {
   const { data: session } = useSession();
 
-  const initialLikes = comment ? comment.likes : post.likes;
-  const initialComments = comment ? comment.comments : post.comments 
-  
-  const [likes, setLikes] = useState(initialLikes);
-  const [comments, setComments] = useState( initialComments);
-  
+  const [likes, setLikes] = useState(post.likes);
+  const [comments, setComments] = useState(post.comments);
 
-  const isLiked = () => {
+  const isPostLiked = () => {
     return likes.some((like) => like.id == session?.user.id);
-  }
-  
-  const savePost = async (newLikes) => {
-    return await updatePost(post.id, {
-      ...post,
-      likes: newLikes,
-    });
   };
- 
-  const saveComment = async (newLikes) => {
-    return await updatePost(post.id, {
-      ...post,
-      comments: [
-        ...post.comments.map((com) => {
-          if (com.id === comment.id) {
-            return { ...com, likes: newLikes };
-          }
-          return com;
-        }),
-      ],
-    });
-  }
-  
-  const handleLike = async() =>  {
-    if (!isLiked()) {   
-      const newLikes = [...likes, session.user];
-      comment ? await saveComment(newLikes) : await savePost(newLikes);
+
+  const isCommentLiked = (commentId) => {
+    const comment = comments.find((c) => c.id === commentId);
+    return comment?.likes.some((like) => like.id === session?.user.id);
+  };
+
+  const handleLikePost = async () => {
+    try {
+      const newLikes = isPostLiked()
+        ? likes.filter((like) => like.id != session.user.id)
+        : [...likes, session.user];
+
+      await updatePost(post.id, {
+        ...post,
+        likes: newLikes,
+      });
+
       setLikes(newLikes);
-    } else {
-      const newLikes = likes.filter((like) => like.id != session.user.id);
-      comment ? await saveComment(newLikes) : await savePost(newLikes);
-      setLikes(newLikes);
+    } catch (error) {
+      console.error(error);
     }
-  }
-  
-  const addComment = async (comment) => {
+  };
+  const handleLikeComment = async (commentId) => {
+    try {
+      const comment = comments.find((c) => c.id === commentId);
+
+      const newLikes = isCommentLiked(commentId)
+        ? comment.likes.filter((like) => like.id != session.user.id)
+        : [...comment.likes, session?.user];
+
+      const newComments = comments.map((com) => {
+        if (com.id === comment.id) {
+          return { ...com, likes: newLikes };
+        }
+        return com;
+      });
+      await updatePost(post.id, {
+        ...post,
+        comments: newComments,
+      });
+      setComments(newComments);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const addCommentToPost = async (comment) => {
     const newComments = [
       ...comments,
       {
@@ -67,8 +74,49 @@ function usePost(post, comment) {
       comments: newComments,
     });
     setComments(newComments);
-  }
+  };
 
-  return [likes, comments, isLiked, handleLike, addComment];
+  const addCommentToComment = async (commentId, newComment) => {
+    const comment = comments.find((c) => c.id === commentId);
+    const newComments = comments.map((com) => {
+      if (com.id === comment.id) {
+        return {
+          ...com,
+          comments: [
+            ...comment.comments,
+            {
+              id: uuid(),
+              userUp: session.user,
+              createdAt: new Date().getTime(),
+              content: newComment,
+              likes: [],
+              comments: [],
+            },
+          ],
+        };
+      }
+      return com;
+    });
+   
+    await updatePost(post.id, {
+      ...post,
+      comments: newComments,
+    });
+    setComments(newComments);
+  };
+
+
+ 
+
+
+  return [
+    likes,
+    comments,
+    isPostLiked,
+    handleLikePost,
+    isCommentLiked,
+    handleLikeComment,
+    addCommentToPost,
+  ];
 }
 export default usePost;

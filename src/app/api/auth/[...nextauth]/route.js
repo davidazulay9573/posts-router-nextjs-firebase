@@ -22,7 +22,14 @@ export const authOptions = {
         await db
           .collection("users")
           .doc(id)
-          .set({ ...restUser, friendRequests: [], friends: [], followers: [] });
+          .set({
+            ...restUser,
+            friendRequests: [],
+            sentFriendRequests:[] ,
+            friends: [],
+            followers: [],
+            following:[],
+          });
       }
       return true;
     },

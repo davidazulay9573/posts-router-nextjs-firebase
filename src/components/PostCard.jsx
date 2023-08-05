@@ -3,15 +3,23 @@ import Link from "next/link";
 import { useState } from "react";
 import dateFormat from "@/utils/dateFormat";
 import LikeIcon from "./LikeIcon";
-import { UserCard } from "./UserCard";
-
+import UserSimpleCard from "./UserSimpleCard";
 import { ChatIcon, HeartIcon } from "@heroicons/react/solid";
-
 import Comments from "./Comments";
 import usePost from "@/hooks/usePost";
+
 export default function PostCard({post}) {
- 
-  const [likes, comments, isLiked, handleLike, addComment] = usePost(post);
+  
+  const [
+    likes,
+    comments,
+    isPostLiked,
+    handleLikePost,
+    isCommentLiked,
+    handleLikeComment,
+    addCommentToPost,
+  ] = usePost(post);
+  
   const [commentView, setCommentsView] = useState(false);
   const [likesView, setLikesView] = useState(false);
   
@@ -43,8 +51,8 @@ export default function PostCard({post}) {
        </Link>
        <div className="flex items-center justify-around px-5 py-2 mt-4 border-t border-gray-200">
          <span className="flex items-center space-x-2 text-purple-600">
-           <button onClick={handleLike}>
-             <LikeIcon targetLike={isLiked() ? "" : "none"} />
+           <button onClick={handleLikePost}>
+             <LikeIcon targetLike={isPostLiked() ? "" : "none"} />
            </button>
            <button
              onClick={() =>
@@ -71,15 +79,19 @@ export default function PostCard({post}) {
      </div>
      <div className="mt-4">
        {commentView && (
-         <Comments post={post} comments={comments} addComment={addComment} />
+         <Comments
+           comments={comments}
+           addCommentToPost={addCommentToPost}
+           isCommentLiked={isCommentLiked}
+           handleLikeComment={handleLikeComment}
+         />
        )}
        {likesView &&
          likes.map((like) => {
-           return <UserCard user={like} />;
+           return <UserSimpleCard key={like.id} user={like} />;
          })}
      </div>
    </>
  );
-   
-  
+     
 }

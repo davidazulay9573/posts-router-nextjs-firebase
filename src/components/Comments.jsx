@@ -4,7 +4,7 @@ import { useFormik } from "formik";
 import Joi from "joi";
 import formikValidation from "@/utils/formikValidation";
 
-function Comments({post, comments, addComment}){
+function Comments({ comments, addCommentToPost, isCommentLiked, handleLikeComment}) {
   const formik = useFormik({
     validateOnMount: true,
     initialValues: {
@@ -19,8 +19,8 @@ function Comments({post, comments, addComment}){
       );
     },
 
-    onSubmit: async ({comment}) => {
-    await addComment(comment);
+    onSubmit: async ({ comment }) => {
+      await addCommentToPost(comment);
     },
   });
   return (
@@ -50,7 +50,14 @@ function Comments({post, comments, addComment}){
       </div>
 
       {comments.map((comm) => {
-        return <Comment key={comm.id} post={post} comment={comm} />;
+        return (
+          <Comment
+            key={comm.id}
+            comment={comm}
+            isCommentLiked={isCommentLiked}
+            handleLikeComment={handleLikeComment}
+          />
+        );
       })}
     </div>
   );
