@@ -3,30 +3,25 @@ import { updateUser } from "@/services/users";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { getUser } from "@/services/users";
+import useSpicificUser from "./useSpecificUser";
 
 function useNetwork(user) {
   const { data: session } = useSession();
-  const [userSession, setUserSession] = useState(null);
 
   const [friends, setFriends] = useState(user.friends);
   const [followers, setFollowers] = useState(user.followers);
   const [friendRequests, setFriendRequests] = useState(user.friendRequests);
-
-
-  useEffect(() => {
-    (async () => {
-      setUserSession((await getUser(session?.user.id)).data.user);
-    })();
-  }, [session]);
+  
+  const userSession = useSpicificUser(session?.user.id);
 
   const isFriend = () => {
-    return friends.some((friend) => friend.id === session?.user.id);
+    return friends.some((friend) => friend.id === userSession?.id);
   };
   const isFollow = () => {
-    return followers.some((follower) => follower.id === session?.user.id);
+    return followers.some((follower) => follower.id === userSession?.id);
   };
   const isSessionSentFriendRequest = () => {
-    return friendRequests.some((reqFr) => reqFr.id === session?.user.id);
+    return friendRequests.some((reqFr) => reqFr.id === userSession?.id);
   };
   const isUserSentFriendRequest = () => {
     return userSession?.friendRequests?.some((reqFr) => reqFr.id === user.id);
@@ -36,7 +31,7 @@ function useNetwork(user) {
 
   const sendFriendRequest = async () => {
     const newFriendRequests = isSessionSentFriendRequest()
-      ? friendRequests.filter((el) => el.id !== session?.user.id)
+      ? friendRequests.filter((el) => el.id !== userSession?.id)
       : [
           ...friendRequests,
           {
@@ -45,8 +40,6 @@ function useNetwork(user) {
             id: userSession.id,
           },
         ];
-
-        console.log(newFriendRequests);
     try {
       await updateUser(user.id, {
         ...user,
@@ -60,7 +53,7 @@ function useNetwork(user) {
 
   const sendFollowing = async () => {
     const newFollowers = isFollow()
-      ? [...followers.filter((user) => user.id !== session?.user.id)]
+      ? [...followers.filter((user) => user.id !== userSession?.id)]
       : [...followers, { name:userSession.name, image:userSession.image, id:userSession.id }];
     try {
       await updateUser(user.id, {

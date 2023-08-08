@@ -5,6 +5,9 @@ import admin from "@/fireBase/fireBaseAdmin";
 const db = admin.firestore();
 export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
+  pages: {
+    signIn: "/",
+  },
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID,
@@ -24,12 +27,12 @@ export const authOptions = {
           .doc(id)
           .set({
             ...restUser,
-            bio:'',
+            bio: "",
             friendRequests: [],
-            sentFriendRequests:[] ,
+            sentFriendRequests: [],
             friends: [],
             followers: [],
-            following:[],
+            following: [],
           });
       }
       return true;
@@ -37,7 +40,7 @@ export const authOptions = {
 
     session: async ({ session, token }) => {
       session.user.id = token.sub;
-     
+
       return session;
     },
   },

@@ -30,16 +30,17 @@ export async function PUT(request,context){
   const {postId} = context.params;
   const response = await db.collection('posts').doc(postId).set(newPost);
   
-  return NextResponse.json(response)
+  return NextResponse.json(response);
 }
 
 export async function DELETE(request,context){
-   const secret = headers().get("secret");
+   
+  const secret = headers().get("secret");
    if (secret !== process.env.NEXT_PUBLIC_API_SECRET) {
      return new Response("Invalid secret", { status: 402 });
    }
    const {postId} = context.params;
    const response = await db.collection('posts').doc(postId).delete()
-
+   
    return NextResponse.json(response)
 }

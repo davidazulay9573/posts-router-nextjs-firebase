@@ -21,7 +21,7 @@ function usePost(post) {
   const handleLikePost = async () => {
     try {
       const newLikes = isPostLiked()
-        ? likes.filter((like) => like.id != session.user.id)
+        ? likes.filter((like) => like.id != session?.user.id)
         : [...likes, session.user];
 
       await updatePost(post.id, {

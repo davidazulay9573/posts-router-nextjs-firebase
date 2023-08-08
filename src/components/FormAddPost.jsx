@@ -1,13 +1,12 @@
 "use client";
+
 import { useFormik } from "formik";
 import Joi from "joi";
 import formikValidation from "@/utils/formikValidation";
 import { savePost } from "@/services/posts";
-import { useSession } from "next-auth/react";
-import generatePostAI from "@/open-ai/generatePostAI";
 
-function FormAddPost() {
-  const { data: session } = useSession();
+function FormAddPost({userSession}) {
+  
   const formik = useFormik({
     validateOnMount: true,
     initialValues: {
@@ -23,11 +22,12 @@ function FormAddPost() {
     },
 
     onSubmit: async ({ body }) => {
-      await savePost({ body, userUp: session.user });
+      const {id, name, image} = userSession;
+      await savePost({ body, userUp: { id, name, image } });
       window.location.href = "/posts";
     },
   });
-
+  
   return (
     <form
       onSubmit={formik.handleSubmit}

@@ -35,6 +35,7 @@ const PersonalCard = ({ user }) => {
     <div className="bg-white shadow p-6 rounded-lg w-full md:max-w-5xl mx-auto">
       <div className="flex flex-col md:flex-row">
         <div className="md:w-1/3 text-center">
+          
           <img
             className="w-32 h-32 rounded-full mx-auto"
             src={user.image}

@@ -4,14 +4,14 @@ import Link from "next/link";
 import { signIn, signOut } from "next-auth/react";
 import { useState } from "react";
 import { usePathname } from "next/navigation";
-
+import useSpicificUser from "@/hooks/useSpecificUser";
 
 function HeaderNav() {
-   const pathname = usePathname();
-  
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
-
   const { data: session } = useSession();
+  const user = useSpicificUser(session?.user.id);
+  console.dir(user);
   const links = session
     ? [
         { title: "Home", path: "/" },
@@ -99,14 +99,11 @@ function HeaderNav() {
               >
                 Sign out
               </button>
-              <Link
-                href="/personal"
-               
-              >
+              <Link href="/personal">
                 <img
                   className="w-8 h-8 rounded-full object-cover"
-                  src={session?.user.image}
-                  alt={session?.user.name}
+                  src={user?.image}
+                  alt={user?.name}
                 />
               </Link>
             </>

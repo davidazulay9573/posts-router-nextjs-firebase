@@ -1,6 +1,6 @@
 'use client'
 import Link from "next/link";
-import { useState } from "react";
+import {  useState } from "react";
 import dateFormat from "@/utils/dateFormat";
 import LikeIcon from "./LikeIcon";
 import UserSimpleCard from "./UserSimpleCard";
@@ -8,9 +8,12 @@ import { ChatIcon, HeartIcon } from "@heroicons/react/solid";
 import Comments from "./Comments";
 import usePost from "@/hooks/usePost";
 import { useSession } from "next-auth/react";
-export default function PostCard({post}) {
+import useSpicificUser from "@/hooks/useSpecificUser";
+
+
+export default function PostCard( { post } ) {
   const {data:session} = useSession();
-  
+  const userUp = useSpicificUser(post.userUp.id);
   const [
     likes,
     comments,
@@ -23,7 +26,7 @@ export default function PostCard({post}) {
   
   const [commentView, setCommentsView] = useState(false);
   const [likesView, setLikesView] = useState(false);
-  
+ 
  return (
    <>
      <div className="w-full max-w-lg mx-auto mt-4 bg-white p-6 rounded-md shadow-md overflow-hidden">
@@ -33,12 +36,12 @@ export default function PostCard({post}) {
            
            <Link
              href={
-               session?.user.id == post.userUp.id
+               session?.user.id == userUp?.id
                  ? "/personal"
-                 : `/users/${post.userUp.id}`
+                 : `/users/${userUp?.id}`
              }
            >
-             <img className="rounded-full h-10 w-10" src={post.userUp.image} />
+             <img className="rounded-full h-10 w-10" src={userUp?.image} />
            </Link>
          </div>
        </div>

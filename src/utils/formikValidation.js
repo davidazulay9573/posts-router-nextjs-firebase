@@ -13,7 +13,4 @@ export function formikValidation(values) {
   };
 }
 
-export const passwordRegex =
-  /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@%$#^&*\-_])(?=(.*\d){4,})[a-zA-Z!@%$#^&*\-_\d]{8,}$/;
-
 export default formikValidation;
