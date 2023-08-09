@@ -10,19 +10,19 @@ function usePost(post) {
   const [comments, setComments] = useState(post.comments);
 
   const isPostLiked = () => {
-    return likes.some((like) => like.id === session?.user.id);
+    return likes.includes(session?.user.id);
   };
 
   const isCommentLiked = (commentId) => {
     const comment = comments.find((c) => c.id === commentId);
-    return comment?.likes.some((like) => like.id === session?.user.id);
+    return comment?.likes.includes(session?.user.id);
   };
 
   const handleLikePost = async () => {
     try {
       const newLikes = isPostLiked()
-        ? likes.filter((like) => like.id != session?.user.id)
-        : [...likes, session.user];
+        ? likes.filter((like) => like != session?.user.id)
+        : [...likes, session?.user.id];
 
       await updatePost(post.id, {
         ...post,
@@ -39,8 +39,8 @@ function usePost(post) {
       const comment = comments.find((c) => c.id === commentId);
 
       const newLikes = isCommentLiked(commentId)
-        ? comment.likes.filter((like) => like.id != session.user.id)
-        : [...comment.likes, session?.user];
+        ? comment.likes.filter((like) => like != session.user.id)
+        : [...comment.likes, session?.user.id];
 
       const newComments = comments.map((com) => {
         if (com.id === comment.id) {
@@ -62,7 +62,7 @@ function usePost(post) {
       ...comments,
       {
         id: uuid(),
-        userUp: session.user,
+        userUp: session?.user.id,
         createdAt: new Date().getTime(),
         content: comment,
         likes: [],
@@ -86,7 +86,7 @@ function usePost(post) {
             ...comment.comments,
             {
               id: uuid(),
-              userUp: session.user,
+              userUp: session?.user.id,
               createdAt: new Date().getTime(),
               content: newComment,
               likes: [],

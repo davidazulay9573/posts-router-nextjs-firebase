@@ -4,7 +4,7 @@ import { useSession } from "next-auth/react";
 import useSpicificUser from "@/hooks/useSpecificUser";
 export default function UserSimpleCard({ user }){
   const { data: session } = useSession();
-  const userCard = useSpicificUser(user.id);
+  const userCard = useSpicificUser(user);
 
     return (
       <div className="flex items-center justify-between space-x-4 p-2 rounded shadow-md m-2">

@@ -13,7 +13,7 @@ import useSpicificUser from "@/hooks/useSpecificUser";
 
 export default function PostCard( { post } ) {
   const {data:session} = useSession();
-  const userUp = useSpicificUser(post.userUp.id);
+  const userUp = useSpicificUser(post.userUp);
   const [
     likes,
     comments,
@@ -98,8 +98,8 @@ export default function PostCard( { post } ) {
          />
        )}
        {likesView &&
-         likes.map((like) => {
-           return <UserSimpleCard key={like.id} user={like} />;
+         likes.map((likeId) => {
+           return <UserSimpleCard key={likeId} user={likeId} />;
          })}
      </div>
    </>

@@ -19,7 +19,7 @@ export default async function Feed(){
 
        {posts.map((post) => {
          return (
-           <PostCard key={post.id} post={post} userSession={userSession} />
+           <PostCard key={post.id} post={post} />
          );
        })}
      </div>

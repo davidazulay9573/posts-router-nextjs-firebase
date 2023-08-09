@@ -7,7 +7,7 @@ const useSpicificUser = (userId) => {
         const user = (await getUser(userId)).data.user;
         setuser(user);
       })();
-    }, []);
+    }, [userId]);
 
   return user;
 }

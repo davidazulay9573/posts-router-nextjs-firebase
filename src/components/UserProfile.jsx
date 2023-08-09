@@ -83,7 +83,7 @@ const UserProfile = ({ user}) => {
             onClick={sendFriendRequest}
             className="flex items-center  px-3 py-2 text-sm text-white bg-green-500 hover:bg-green-600 rounded shadow mx-2"
           >
-            {isSessionSentFriendRequest() ? (
+            {isSessionSentFriendRequest() ?  (
               <>
                 <ArrowCircleRightIcon className="h-5 w-5 mr-2" />
                 Cancel
@@ -108,8 +108,8 @@ const UserProfile = ({ user}) => {
           {user?.friends.length} Friends
         </button>
         {friendsView &&
-          user.friends.map((user) => (
-            <UserSimpleCard key={user.id} user={user} />
+          user.friends.map((userId) => (
+            <UserSimpleCard key={userId} user={userId} />
           ))}
         <button
           onClick={() => {
@@ -120,8 +120,8 @@ const UserProfile = ({ user}) => {
           {followers.length} Followers
         </button>
         {followersView &&
-          user.followers.map((user) => (
-            <UserSimpleCard key={user.id} user={user} />
+          user.followers.map((userId) => (
+            <UserSimpleCard key={userId} user={userId} />
           ))}
         {/* <button className="m-2">{user?.posts.length} Posts</button> */}
       </div>

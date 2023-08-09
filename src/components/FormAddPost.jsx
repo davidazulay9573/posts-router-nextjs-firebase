@@ -4,9 +4,11 @@ import { useFormik } from "formik";
 import Joi from "joi";
 import formikValidation from "@/utils/formikValidation";
 import { savePost } from "@/services/posts";
+import { useSession } from "next-auth/react";
 
-function FormAddPost({userSession}) {
-  
+function FormAddPost() {
+  const {data:session} = useSession();
+
   const formik = useFormik({
     validateOnMount: true,
     initialValues: {
@@ -22,8 +24,8 @@ function FormAddPost({userSession}) {
     },
 
     onSubmit: async ({ body }) => {
-      const {id, name, image} = userSession;
-      await savePost({ body, userUp: { id, name, image } });
+      
+      await savePost({ body, userUp: session?.user.id });
       window.location.href = "/posts";
     },
   });

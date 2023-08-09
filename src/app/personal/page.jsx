@@ -10,7 +10,7 @@ export default async function Personal(){
     return (
         <div className="flex flex-col items-center m-4">
             {user && <PersonalCard user={user}/>}
-            {posts.map(post => {return <PostCard key={post.id} post={post}/>})}
+            {posts.map(post => {return <PostCard key={post.id} post={post} />})}
         </div>
     )
 }

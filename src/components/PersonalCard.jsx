@@ -60,8 +60,8 @@ const PersonalCard = ({ user }) => {
             Friends {user?.friends.length}
           </button>
           {friendsView &&
-            user.friends.map((user) => (
-              <UserSimpleCard key={user.id} user={user} />
+            user.friends.map((userId) => (
+              <UserSimpleCard key={userId} user={userId} />
             ))}
           <button
             onClick={() => setFollowersView((followersView) => !followersView)}
@@ -70,8 +70,8 @@ const PersonalCard = ({ user }) => {
             Followers {user.followers.length}
           </button>
           {followersView &&
-            user.followers.map((user) => (
-              <UserSimpleCard key={user.id} user={user} />
+            user.followers.map((userId) => (
+              <UserSimpleCard key={userId} user={userId} />
             ))}
           <button className="p-2 rounded bg-gray-100 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
             {/* Posts {user?.posts.length} */}

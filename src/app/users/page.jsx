@@ -12,7 +12,7 @@ export default async function Users() {
       {users
         .filter((user) => user.id !== session?.user.id)
         .map((user) => {
-          return <UserSimpleCard key={user.id} user={user} />;
+          return <UserSimpleCard key={user.id} user={user.id} />;
         })}
     </div>
   );

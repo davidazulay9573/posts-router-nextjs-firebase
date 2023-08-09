@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 
 function Comment({ comment, isCommentLiked, handleLikeComment }) {
-  const userUp = useSpicificUser(comment.userUp.id)
+  const userUp = useSpicificUser(comment.userUp)
   const { data: session} = useSession();
   return (
     <div className="bg-white dark:bg-gray-800 text-black dark:text-gray-200 p-4 antialiased flex max-w-lg">

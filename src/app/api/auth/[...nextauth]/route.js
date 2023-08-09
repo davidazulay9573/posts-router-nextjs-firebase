@@ -40,7 +40,6 @@ export const authOptions = {
 
     session: async ({ session, token }) => {
       session.user.id = token.sub;
-
       return session;
     },
   },

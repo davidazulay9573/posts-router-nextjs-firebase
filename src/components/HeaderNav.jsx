@@ -11,7 +11,7 @@ function HeaderNav() {
   const [isOpen, setIsOpen] = useState(false);
   const { data: session } = useSession();
   const user = useSpicificUser(session?.user.id);
-  console.dir(user);
+
   const links = session
     ? [
         { title: "Home", path: "/" },

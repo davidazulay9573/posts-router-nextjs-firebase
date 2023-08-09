@@ -14,7 +14,7 @@ export async function GET(request, context) {
 
   const snapshot = await db
     .collection("posts")
-    .where("userUp.id", "==", userId)
+    .where("userUp", "==", userId)
     .get();
   const posts = snapshot.docs.map((doc) => {
     return {
@@ -34,6 +34,6 @@ export async function PUT(request, context) {
   const user = await request.json();
   const { userId } = context.params;
   const response = await db.collection("users").doc(userId).set(user);
-
+  
   return NextResponse.json(response);
 }
