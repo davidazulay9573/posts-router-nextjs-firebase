@@ -1,5 +1,5 @@
 'use client'
-import { useState } from "react";
+import { useState } from "react"
 import {
   PlusIcon,
   UserAddIcon,
@@ -12,6 +12,7 @@ import {
 
 import UserSimpleCard from "./UserSimpleCard";
 import useNetwork from "@/hooks/useNetwork";
+
 const UserProfile = ({ user}) => {
 
  const [
@@ -23,8 +24,10 @@ const UserProfile = ({ user}) => {
    sendFriendRequest,
    approveFriendRequest,
    removeFriend,
+   friends,
    followers,
  ] = useNetwork(user);
+ 
  const [friendsView , setFriendsView] = useState(false);
  const [followersView, setFollowersView] = useState(false);
  
@@ -105,10 +108,10 @@ const UserProfile = ({ user}) => {
           }}
           className="m-2"
         >
-          {user?.friends.length} Friends
+          {friends.length} Friends
         </button>
         {friendsView &&
-          user.friends.map((userId) => (
+          friends.map((userId) => (
             <UserSimpleCard key={userId} user={userId} />
           ))}
         <button
@@ -120,7 +123,7 @@ const UserProfile = ({ user}) => {
           {followers.length} Followers
         </button>
         {followersView &&
-          user.followers.map((userId) => (
+          followers?.map((userId) => (
             <UserSimpleCard key={userId} user={userId} />
           ))}
         {/* <button className="m-2">{user?.posts.length} Posts</button> */}

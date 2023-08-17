@@ -11,7 +11,7 @@ import { storage } from "./fireBase";
     if (!imageUpload) return;
     const imageRef = ref(storage, `images/${imageUpload.name }`);
     const snapshot = await uploadBytes(imageRef, imageUpload);
-    const url = await  getDownloadURL(snapshot.ref);
+    const url = await getDownloadURL(snapshot.ref);
      return url
   };
 

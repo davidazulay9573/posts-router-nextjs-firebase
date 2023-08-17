@@ -16,7 +16,7 @@ export async function GET(
     const { postId } = context.params;
     const post = await db.collection("posts").doc(postId).get();
 
-    return NextResponse.json({ id: post.id, ...post.data() });
+    return NextResponse.json({ id: post.id, ...post.data()});
 
 }
 
@@ -26,7 +26,7 @@ export async function PUT(request,context){
      return new Response("Invalid secret", { status: 402 });
    }
   const post = await request.json();
-  const newPost = {...post, rating: (post.likes.length + (post.comments.length * 2)) }
+  const newPost = {...post, rating: (post.likes.length + (post.comments.length * 2))}
   const {postId} = context.params;
   const response = await db.collection('posts').doc(postId).set(newPost);
   

@@ -1,6 +1,6 @@
 'use client' 
 
-function LikeIcon({targetLike,size = 24}){
+function LikeIcon({targetLike, size = 24}){
    
   return (
    

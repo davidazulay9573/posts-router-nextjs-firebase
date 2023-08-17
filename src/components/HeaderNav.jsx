@@ -99,7 +99,7 @@ function HeaderNav() {
               >
                 Sign out
               </button>
-              <Link href="/personal">
+              <Link  href="/personal">
                 <img
                   className="w-8 h-8 rounded-full object-cover"
                   src={user?.image}

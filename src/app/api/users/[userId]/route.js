@@ -21,7 +21,7 @@ export async function GET(request, context) {
       id: doc.id,
       ...doc.data(),
     };
-  });
+  }).sort((a,b) => {return b.createdAt - a.createdAt});
 
   return NextResponse.json({ user: { id: user.id, ...user.data() }, posts });
 }

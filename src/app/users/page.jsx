@@ -6,7 +6,7 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 export default async function Users() {
   const session = await getServerSession(authOptions);
   const users = await (await getUsers()).data;
- 
+  console.log(users);
   return (
     <div className="m-4 items-center text-center ">
       {users

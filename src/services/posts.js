@@ -2,9 +2,8 @@ import httpService from "./httpService";
 
 httpService.setCommonHeader("secret", process.env.NEXT_PUBLIC_API_SECRET);
 
-export function getPosts(){
-  
-  return httpService.get('/posts');
+export function getPosts(userWatch){
+  return httpService.get('/posts', userWatch);
 }
 
 export async function getPost(postId) {

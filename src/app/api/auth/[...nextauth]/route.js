@@ -29,10 +29,10 @@ export const authOptions = {
             ...restUser,
             bio: "",
             friendRequests: [],
-            sentFriendRequests: [],
             friends: [],
             followers: [],
             following: [],
+            createdAt: Date.now(),
           });
       }
       return true;

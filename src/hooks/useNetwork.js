@@ -2,26 +2,30 @@ import { updateUser } from "@/services/users";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { getUser } from "@/services/users";
-import useSpicificUser from "./useSpecificUser";
 
 function useNetwork(user) {
   const { data: session } = useSession();
-
+ 
   const [friends, setFriends] = useState(user.friends);
   const [followers, setFollowers] = useState(user.followers);
   const [friendRequests, setFriendRequests] = useState(user.friendRequests);
   const [userSession, setUserSession] = useState(null);
-    useEffect(() => {
-      (async () => {
-        const userSession = (await getUser(session?.user.id)).data.user;
-        setUserSession(userSession);
-      })();
-    }, [session, user]);
 
+  useEffect(() => {
+    (async () => {
+      const userSession = (await getUser(session?.user.id)).data.user;
+      const userCard = (await getUser(user.id)).data.user;
+      setUserSession(userSession);
+      setFriends(userCard.friends);
+      setFollowers(userCard.followers);
+      setFriendRequests(userCard.friendRequests);
+    })();
+  }, [session, user]);
 
   const isFriend = () => {
     return (
-      userSession?.friends?.includes(user.id) || friends.includes(session?.user.id)
+      userSession?.friends?.includes(user.id) ||
+      friends.includes(session?.user.id)
     );
   };
   const isFollow = () => {
@@ -51,12 +55,19 @@ function useNetwork(user) {
 
   const sendFollowing = async () => {
     const newFollowers = isFollow()
-      ? [...followers.filter((userId) => userId !== session?.user.id)]
+      ? followers.filter((userId) => userId !== session?.user.id)
       : [...followers, session?.user.id];
+    const newFollowing = isFollow()
+      ? userSession?.following.filter((userId) => userId !== user.id)
+      : [...userSession?.following, user.id];
     try {
       await updateUser(user.id, {
         ...user,
         followers: newFollowers,
+      });
+      await updateUser(session?.user.id, {
+        ...userSession,
+        following: newFollowing,
       });
       setFollowers(newFollowers);
     } catch (error) {
@@ -70,6 +81,7 @@ function useNetwork(user) {
         friends: [...friends, session?.user.id],
       });
       await updateUser(session?.user.id, {
+
         ...userSession,
         friends: [...userSession?.friends, user.id],
         friendRequests: [
@@ -80,7 +92,7 @@ function useNetwork(user) {
         ...userSession,
         friends: [...userSession?.friends, user.id],
         friendRequests: [
-          ...userSession.friendRequests.filter((userId) => userId !== user.id),
+          ...userSession?.friendRequests.filter((userId) => userId !== user.id),
         ],
       });
       setFriends([...friends, session?.user.id]);
@@ -95,20 +107,15 @@ function useNetwork(user) {
     try {
       await updateUser(user.id, {
         ...user,
-        friends: [
-          ...friends.filter((userId) => userId !== session?.user.id),
-        ],
+        friends: [...friends.filter((userId) => userId !== session?.user.id)],
       });
       await updateUser(session?.user.id, {
         ...userSession,
         friends: [
-          ...userSession.friends.filter(
-            (userId) => userId !== user.id
-          ),
+          ...userSession.friends.filter((userId) => userId !== user.id),
         ],
       });
-      
-      
+
       setFriends(friends.filter((userId) => userId !== session?.user.id));
       setUserSession({
         ...userSession,
@@ -127,6 +134,7 @@ function useNetwork(user) {
     sendFriendRequest,
     approveFriendRequest,
     removeFriend,
+    friends,
     followers,
   ];
 }
