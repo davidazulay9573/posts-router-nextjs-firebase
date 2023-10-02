@@ -1,38 +1,24 @@
-import { updateUser } from "@/services/users";
+import useUserAndSave from "./useUserAndSave";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import { getUser } from "@/services/users";
+import { sendNotification } from "@/services/notifications";
 
 function useNetwork(user) {
   const { data: session } = useSession();
- 
-  const [friends, setFriends] = useState(user.friends);
-  const [followers, setFollowers] = useState(user.followers);
-  const [friendRequests, setFriendRequests] = useState(user.friendRequests);
-  const [userSession, setUserSession] = useState(null);
 
-  useEffect(() => {
-    (async () => {
-      const userSession = (await getUser(session?.user.id)).data.user;
-      const userCard = (await getUser(user.id)).data.user;
-      setUserSession(userSession);
-      setFriends(userCard.friends);
-      setFollowers(userCard.followers);
-      setFriendRequests(userCard.friendRequests);
-    })();
-  }, [session, user]);
+  const [userCard, setUserCard] = useUserAndSave(user);
+  const [userSession, setUserSession] = useUserAndSave(session?.user);
 
   const isFriend = () => {
     return (
       userSession?.friends?.includes(user.id) ||
-      friends.includes(session?.user.id)
+      userCard?.friends?.includes(session?.user.id)
     );
   };
   const isFollow = () => {
-    return followers.includes(session?.user.id);
+    return userCard?.followers?.includes(session?.user.id);
   };
   const isSessionSentFriendRequest = () => {
-    return friendRequests.includes(session?.user.id);
+    return userCard?.friendRequests?.includes(session?.user.id);
   };
   const isUserSentFriendRequest = () => {
     return userSession?.friendRequests?.includes(user.id);
@@ -40,91 +26,96 @@ function useNetwork(user) {
 
   const sendFriendRequest = async () => {
     const newFriendRequests = isSessionSentFriendRequest()
-      ? friendRequests.filter((userId) => userId !== session?.user.id)
-      : [...friendRequests, session?.user.id];
-    try {
-      await updateUser(user.id, {
-        ...user,
-        friendRequests: newFriendRequests,
-      });
-      setFriendRequests(newFriendRequests);
-    } catch (error) {
-      console.error(error);
-    }
+      ? userCard?.friendRequests?.filter(
+          (userId) => userId !== session?.user.id
+        )
+      : [...userCard?.friendRequests, session?.user.id];
+
+    await setUserCard({
+      ...userCard,
+      friendRequests: newFriendRequests,
+    });
+    !isSessionSentFriendRequest() &&
+      (await sendNotification({
+        userSender: session?.user.id,
+        userReceives: user.id,
+        type: "friend",
+      }));
   };
 
   const sendFollowing = async () => {
     const newFollowers = isFollow()
-      ? followers.filter((userId) => userId !== session?.user.id)
-      : [...followers, session?.user.id];
+      ? userCard.followers.filter((userId) => userId !== session?.user.id)
+      : [...userCard.followers, session?.user.id];
     const newFollowing = isFollow()
       ? userSession?.following.filter((userId) => userId !== user.id)
       : [...userSession?.following, user.id];
-    try {
-      await updateUser(user.id, {
-        ...user,
-        followers: newFollowers,
-      });
-      await updateUser(session?.user.id, {
-        ...userSession,
-        following: newFollowing,
-      });
-      setFollowers(newFollowers);
-    } catch (error) {
-      console.error(error);
-    }
+    
+    await setUserCard({
+      ...userCard,
+      followers: newFollowers,
+    });
+    await setUserSession({
+      ...userSession,
+      following: newFollowing,
+    });
+
+    !isFollow() && await sendNotification({
+      userSender: session?.user.id,
+      userReceives: user.id,
+      type: "follow",
+    });
   };
   const approveFriendRequest = async () => {
-    try {
-      await updateUser(user.id, {
-        ...user,
-        friends: [...friends, session?.user.id],
-      });
-      await updateUser(session?.user.id, {
+    await setUserCard({
+      ...userCard,
+      friends: [...userCard.friends, session?.user.id],
+      friendRequests: [
+        ...userCard?.friendRequests.filter(
+          (userId) => userId !== session?.user.id
+        ),
+      ],
+    });
 
-        ...userSession,
-        friends: [...userSession?.friends, user.id],
-        friendRequests: [
-          ...userSession.friendRequests.filter((userId) => userId !== user.id),
-        ],
-      });
-      setUserSession({
-        ...userSession,
-        friends: [...userSession?.friends, user.id],
-        friendRequests: [
-          ...userSession?.friendRequests.filter((userId) => userId !== user.id),
-        ],
-      });
-      setFriends([...friends, session?.user.id]);
-    } catch (error) {
-      console.error(error);
-    }
+    await setUserSession({
+      ...userSession,
+      friends: [...userSession?.friends, user.id],
+      friendRequests: [
+        ...userSession?.friendRequests.filter((userId) => userId !== user.id),
+      ],
+    });
+    
+    await sendNotification({
+       userSender: session?.user.id,
+       userReceives: user.id,
+       type: "approve",
+     });
   };
 
-  const rejectFriendRequest = async () => {};
+  const rejectFriendRequest = async () => {
+       await setUserSession({
+         ...userSession,
+         friendRequests: [
+           ...userSession?.friendRequests.filter(
+             (userId) => userId !== user.id
+           ),
+         ],
+       });
+    
+  };
 
   const removeFriend = async () => {
-    try {
-      await updateUser(user.id, {
-        ...user,
-        friends: [...friends.filter((userId) => userId !== session?.user.id)],
-      });
-      await updateUser(session?.user.id, {
-        ...userSession,
-        friends: [
-          ...userSession.friends.filter((userId) => userId !== user.id),
-        ],
-      });
+    await setUserCard({
+      ...userCard,
+      friends: userCard.friends.filter((userId) => userId !== session?.user.id),
+    });
 
-      setFriends(friends.filter((userId) => userId !== session?.user.id));
-      setUserSession({
-        ...userSession,
-        friends: [
-          ...userSession.friends.filter((userId) => userId !== user.id),
-        ],
-      });
-    } catch (error) {}
+    await setUserSession({
+      ...userSession,
+      friends: [...userSession.friends.filter((userId) => userId !== user.id)],
+    });
   };
+
   return [
     isFollow,
     isFriend,
@@ -133,9 +124,10 @@ function useNetwork(user) {
     sendFollowing,
     sendFriendRequest,
     approveFriendRequest,
+    rejectFriendRequest,
     removeFriend,
-    friends,
-    followers,
+    userCard,
+    userSession,
   ];
 }
 

@@ -6,13 +6,13 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 export default async function Users() {
   const session = await getServerSession(authOptions);
   const users = await (await getUsers()).data;
-  console.log(users);
+  
   return (
     <div className="m-4 items-center text-center ">
       {users
         .filter((user) => user.id !== session?.user.id)
         .map((user) => {
-          return <UserSimpleCard key={user.id} user={user.id} />;
+          return <UserSimpleCard key={user.id} userId={user.id} />;
         })}
     </div>
   );

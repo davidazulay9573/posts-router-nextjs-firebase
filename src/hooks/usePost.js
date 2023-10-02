@@ -1,26 +1,24 @@
 import { useState,  useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { updatePost, deletePost } from "@/services/posts";
+import { updatePost } from "@/services/posts";
+import { sendNotification } from "@/services/notifications";
 import { getPost } from "@/services/posts";
 import { v4 as uuid } from "uuid";
-
 
 function usePost(post) {
   const { data: session } = useSession();
   
   const [likes, setLikes] = useState(post?.likes);
   const [comments, setComments] = useState(post?.comments);
+
    useEffect(() => {
     (async () => {
-      const updatePost = (await getPost(post.id)).data;
-  
-    setLikes(updatePost.likes)
-    setComments(updatePost.comments)
-
+      const data = (await getPost(post.id)).data;
+      setLikes(data.post.likes)
+      setComments(data.post.comments)
     })()
    },[session])
   
-
   const isPostLiked = () => {
     return likes.includes(session?.user.id);
   };
@@ -42,9 +40,11 @@ function usePost(post) {
       });
 
       setLikes(newLikes);
+      
     } catch (error) {
       console.error(error);
     }
+
   };
   const handleLikeComment = async (commentId) => {
     try {
@@ -69,6 +69,7 @@ function usePost(post) {
       console.error(error);
     }
   };
+  
   const addCommentToPost = async (comment) => {
     const newComments = [
       ...comments,
@@ -116,10 +117,6 @@ function usePost(post) {
     });
     setComments(newComments);
   };
-
-
- 
-
 
   return [
     likes,

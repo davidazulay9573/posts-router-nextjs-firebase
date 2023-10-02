@@ -5,8 +5,8 @@ import SessionProvider from "@/contexts/sessionProvider";
 import { getServerSession } from "next-auth";
 import { authOptions } from "./api/auth/[...nextauth]/route";
 
-export const metadata = {
 
+export const metadata = {
   title: "Posts-Router",
   description: "",
 };

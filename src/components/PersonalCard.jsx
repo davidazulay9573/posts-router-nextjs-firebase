@@ -8,6 +8,8 @@ import { PencilIcon } from "@heroicons/react/solid";
 import Link from "next/link";
 
 const PersonalCard = ({ user }) => {
+  if(!user)return
+
   const [friendsView, setFriendsView] = useState(false);
   const [followersView, setFollowersView] = useState(false);
 
@@ -30,14 +32,12 @@ const PersonalCard = ({ user }) => {
       window.location.href = "/posts";
     },
   });
-
   return (
     <div className="bg-white shadow p-6 rounded-lg w-full md:max-w-5xl mx-auto">
       <div className="flex flex-col md:flex-row">
         <div className="md:w-1/3 text-center">
-          
           <img
-            className="w-32 h-32 rounded-full mx-auto"
+            className="w-32 h-32 rounded-full mx-auto border-2 border-gray-300"
             src={user.image}
             alt={user.name}
           />
@@ -61,7 +61,7 @@ const PersonalCard = ({ user }) => {
           </button>
           {friendsView &&
             user.friends.map((userId) => (
-              <UserSimpleCard key={userId} user={userId} />
+              <UserSimpleCard key={userId} userId={userId} />
             ))}
           <button
             onClick={() => setFollowersView((followersView) => !followersView)}
@@ -71,7 +71,7 @@ const PersonalCard = ({ user }) => {
           </button>
           {followersView &&
             user.followers.map((userId) => (
-              <UserSimpleCard key={userId} user={userId} />
+              <UserSimpleCard key={userId} userId={userId} />
             ))}
           <button className="p-2 rounded bg-gray-100 hover:bg-gray-200 focus:outline-none focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50">
             {/* Posts {user?.posts.length} */}

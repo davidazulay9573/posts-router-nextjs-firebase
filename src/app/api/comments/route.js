@@ -9,25 +9,23 @@ export async function GET(req) {
   if (secret !== process.env.NEXT_PUBLIC_API_SECRET) {
     return new Response("Invalid secret", { status: 402 });
   }
-   const userId = req.nextUrl.searchParams.get("user-id");
 
   try {
-      const snapshot = userId
-        ? await db.collection("posts").where("userUp","==",userId).get()
-        : await db.collection("posts").get(); 
-      const posts = snapshot.docs.map( (doc) => { 
-        return {
-          id: doc.id,
-          ...doc.data(),
-        };
-      });
-      return NextResponse.json(posts);
+    const postId = req.nextUrl.searchParams.get("post-id");
+    const snapshot = await db
+      .collection("comments")
+      .where('postid', "==", postId)
+      .get();
+    const comments = snapshot.docs.map((doc) => {
+      return {
+        id: doc.id,
+        ...doc.data(),
+      };
+    });
+    return NextResponse.json(comments);
   } catch (error) {
     return new Response(error, { status: 500 });
-    
   }
- 
-
 }
 
 export async function POST(request) {
@@ -37,22 +35,20 @@ export async function POST(request) {
   }
   try {
     const body = await request.json();
-    if(!body){
-      return new Response('Must provide body',{status:400})
+    if (!body) {
+      return new Response("Must provide body", { status: 400 });
     }
-    const newPost = {
+    const newComment = {
       ...body,
       createdAt: Date.now(),
       rating: 0,
       likes: [],
       comments: [],
     };
-    const post = await db.collection("posts").doc().set(newPost);
+    const comment = await db.collection("posts").doc().set(newComment);
 
-    return NextResponse.json(post);
+    return NextResponse.json(comment);
   } catch (error) {
     return new Response(error, { status: 500 });
-    
   }
-  
 }

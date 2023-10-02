@@ -18,6 +18,7 @@ function HeaderNav() {
         { title: "About", path: "/about" },
         { title: "Posts", path: "/posts" },
         { title: "Users", path: "/users" },
+        { title: "Notifications", path: `/personal/notifications` },
       ]
     : [
         { title: "Home", path: "/" },
@@ -99,9 +100,9 @@ function HeaderNav() {
               >
                 Sign out
               </button>
-              <Link  href="/personal">
+              <Link href="/personal">
                 <img
-                  className="w-8 h-8 rounded-full object-cover"
+                  className="w-10 h-10 rounded-full object-cover border-2 border-gray-300"
                   src={user?.image}
                   alt={user?.name}
                 />

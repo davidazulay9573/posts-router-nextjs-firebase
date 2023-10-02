@@ -12,15 +12,19 @@ const serviceAccount = {
   token_uri: process.env.FIREBASE_TOKEN_URI,
   auth_provider_x509_cert_url: process.env.FIREBASE_AUTH_PROVIDER_X509_CERT_URL,
   client_x509_cert_url: process.env.FIREBASE_CLIENT_X509_CERT_URL,
-  // universe_domain: "googleapis.com",
-  FIRE_BASE_STORGE: "gs://chat-e0088.appspot.com",
+  storageBucket: process.env.FIREBASE_STORGE,
+
+  universe_domain: "googleapis.com",
 };
 
 getApps().length === 0
   ? admin.initializeApp({
       credential: admin.credential.cert(serviceAccount),
-      databaseURL: "https://chat-e0088-default-rtdb.firebaseio.com",
+      storageBucket: process.env.FIREBASE_STORGE,
     })
   : getApps()[0];
+
+const bucket = admin.storage().bucket();
+  
 
 export default admin

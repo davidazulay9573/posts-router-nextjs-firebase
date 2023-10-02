@@ -1,15 +1,13 @@
 'use client'
 import Link from "next/link";
-import {  useState } from "react";
+import { useState } from "react";
 import dateFormat from "@/utils/dateFormat";
-import LikeIcon from "./LikeIcon";
 import UserSimpleCard from "./UserSimpleCard";
 import { ChatIcon, HeartIcon } from "@heroicons/react/solid";
 import Comments from "./Comments";
 import usePost from "@/hooks/usePost";
 import { useSession } from "next-auth/react";
 import useSpicificUser from "@/hooks/useSpecificUser";
-
 
 export default function PostCard( { post } ) {
   const {data:session} = useSession();
@@ -33,15 +31,18 @@ export default function PostCard( { post } ) {
        <div className="border-b border-gray-200 mb-4">
          <div className="flex justify-between items-center text-gray-500 font-semibold m-1">
            <div className="m-1">{dateFormat(post.createdAt)}</div>
-           
+
            <Link
              href={
-               session?.user.id == userUp?.id
+               session?.user.id == post.userUp
                  ? "/personal"
-                 : `/users/${userUp?.id}`
+                 : `/users/${post.userUp}`
              }
            >
-             <img className="rounded-full h-10 w-10" src={userUp?.image} />
+             <img
+               className="w-12 h-12 rounded-full object-cover border-2 border-gray-300"
+               src={userUp?.image}
+             />
            </Link>
          </div>
        </div>
@@ -63,7 +64,12 @@ export default function PostCard( { post } ) {
        <div className="flex items-center justify-around px-5 py-2 mt-4 border-t border-gray-200">
          <span className="flex items-center space-x-2 text-purple-600">
            <button onClick={handleLikePost}>
-             <LikeIcon targetLike={isPostLiked() ? "" : "none"} />
+             <HeartIcon
+               className={`h-6 w-6 ${
+                 isPostLiked() ? "text-red-500 fill-current" : "text-gray-200"
+               }`}
+               aria-hidden="true"
+             />
            </button>
            <button
              onClick={() =>
@@ -99,7 +105,7 @@ export default function PostCard( { post } ) {
        )}
        {likesView &&
          likes.map((likeId) => {
-           return <UserSimpleCard key={likeId} user={likeId} />;
+           return <UserSimpleCard key={likeId} userId={likeId} />;
          })}
      </div>
    </>
