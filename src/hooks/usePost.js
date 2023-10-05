@@ -1,45 +1,42 @@
-import { useState,  useEffect } from "react";
+
 import { useSession } from "next-auth/react";
-import { updatePost } from "@/services/posts";
 import { sendNotification } from "@/services/notifications";
-import { getPost } from "@/services/posts";
 import { v4 as uuid } from "uuid";
+import usePostAndSave from "./usePostAndSave";
 
-function usePost(post) {
+function usePost(postPR) {
+  const [post , setPost] = usePostAndSave(postPR);
   const { data: session } = useSession();
-  
-  const [likes, setLikes] = useState(post?.likes);
-  const [comments, setComments] = useState(post?.comments);
 
-   useEffect(() => {
-    (async () => {
-      const data = (await getPost(post.id)).data;
-      setLikes(data.post.likes)
-      setComments(data.post.comments)
-    })()
-   },[session])
-  
   const isPostLiked = () => {
-    return likes.includes(session?.user.id);
+    return post.likes.includes(session?.user.id);
   };
 
   const isCommentLiked = (commentId) => {
-    const comment = comments.find((c) => c.id === commentId);
+    const comment = post.comments.find((c) => c.id === commentId);
     return comment?.likes.includes(session?.user.id);
   };
 
   const handleLikePost = async () => {
     try {
       const newLikes = isPostLiked()
-        ? likes.filter((like) => like != session?.user.id)
-        : [...likes, session?.user.id];
+        ? post.likes.filter((like) => like != session?.user.id)
+        : [...post.likes, session?.user.id];
 
-      await updatePost(post.id, {
+      await setPost( {
         ...post,
         likes: newLikes,
       });
-
-      setLikes(newLikes);
+       !isPostLiked() &&
+         session?.user.id != post.userUp && 
+         (
+             await sendNotification({
+               userSender: session?.user.id,
+               userReceives: post.userUp,
+               type: "likePost",
+               link:`/posts/${post.id}`
+             })
+           );
       
     } catch (error) {
       console.error(error);
@@ -48,23 +45,32 @@ function usePost(post) {
   };
   const handleLikeComment = async (commentId) => {
     try {
-      const comment = comments.find((c) => c.id === commentId);
+      const comment = post.comments.find((c) => c.id === commentId);
 
       const newLikes = isCommentLiked(commentId)
         ? comment.likes.filter((like) => like != session.user.id)
         : [...comment.likes, session?.user.id];
 
-      const newComments = comments.map((com) => {
+      const newComments = post.comments.map((com) => {
         if (com.id === comment.id) {
           return { ...com, likes: newLikes };
         }
         return com;
       });
-      await updatePost(post.id, {
+
+      await setPost( {
         ...post,
         comments: newComments,
       });
-      setComments(newComments);
+       !isCommentLiked() &&
+         session?.user.id != post.userUp &&
+         (await sendNotification({
+           userSender: session?.user.id,
+           userReceives: post.userUp,
+           type: "likeComment",
+           link: `/posts/${post.id}`,
+         }));
+      
     } catch (error) {
       console.error(error);
     }
@@ -72,7 +78,7 @@ function usePost(post) {
   
   const addCommentToPost = async (comment) => {
     const newComments = [
-      ...comments,
+      ...post.comments,
       {
         id: uuid(),
         userUp: session?.user.id,
@@ -82,45 +88,44 @@ function usePost(post) {
         comments: [],
       },
     ];
-    await updatePost(post.id, {
+    await setPost( {
       ...post,
       comments: newComments,
-    });
-    setComments(newComments);
-  };
-
-  const addCommentToComment = async (commentId, newComment) => {
-    const comment = comments.find((c) => c.id === commentId);
-    const newComments = comments.map((com) => {
-      if (com.id === comment.id) {
-        return {
-          ...com,
-          comments: [
-            ...comment.comments,
-            {
-              id: uuid(),
-              userUp: session?.user.id,
-              createdAt: new Date().getTime(),
-              content: newComment,
-              likes: [],
-              comments: [],
-            },
-          ],
-        };
-      }
-      return com;
     });
    
-    await updatePost(post.id, {
-      ...post,
-      comments: newComments,
-    });
-    setComments(newComments);
   };
 
+  // const addCommentToComment = async (commentId, newComment) => {
+  //   const comment = comments.find((c) => c.id === commentId);
+  //   const newComments = comments.map((com) => {
+  //     if (com.id === comment.id) {
+  //       return {
+  //         ...com,
+  //         comments: [
+  //           ...comment.comments,
+  //           {
+  //             id: uuid(),
+  //             userUp: session?.user.id,
+  //             createdAt: new Date().getTime(),
+  //             content: newComment,
+  //             likes: [],
+  //             comments: [],
+  //           },
+  //         ],
+  //       };
+  //     }
+  //     return com;
+  //   });
+   
+  //   await updatePost(post.id, {
+  //     ...post,
+  //     comments: newComments,
+  //   });
+  //   setComments(newComments);
+  // };
+
   return [
-    likes,
-    comments,
+    post,
     isPostLiked,
     handleLikePost,
     isCommentLiked,

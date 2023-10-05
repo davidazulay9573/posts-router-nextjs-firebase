@@ -34,18 +34,17 @@ export async function GET(req) {
  
 }
 
-
-
 export async function POST(req) {
   const secret = headers().get("secret");
   if (secret !== process.env.NEXT_PUBLIC_API_SECRET) {
     return new Response("Invalid secret", { status: 402 });
   }
   try {
-    const { userSender, userReceives, type } = await req.json();
+    const { userSender, userReceives, type, link } = await req.json();
     const newNotification = {
       userReceives,
       userSender,
+      link,
       message: messageNotificFormat(type),
       createdAt: Date.now(),
       isReaded: false,

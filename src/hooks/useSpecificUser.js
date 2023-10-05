@@ -4,7 +4,7 @@ const useSpicificUser = (userId) => {
     const [user, setuser] = useState(null);
     useEffect(() => {
       (async () => {
-        const user = (await getUser(userId)).data.user;
+        const user = (await getUser(userId)).data;
         setuser(user);
       })();
     }, [userId]);

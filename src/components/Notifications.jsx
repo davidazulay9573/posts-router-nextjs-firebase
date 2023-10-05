@@ -9,11 +9,14 @@ export default function Notifications({session}){
          setNotifications((await getNotifications(session?.user.id)).data)
        })()
     },[session])
-      return (
-        <div className="m-4 items-center text-center ">
-          {notifications.map((not) => {
-            return <NotificationCard key={not.id} notification={not} />;
-          })}
-        </div>
-      );
+        if (!notifications.length){
+            return( <div className="m-4 items-center text-center ">Dont have notifications yet</div>)
+        }
+          return (
+            <div className="m-4 items-center text-center ">
+              {notifications.map((not) => {
+                return <NotificationCard key={not.id} notification={not} />;
+              })}
+            </div>
+          );
 }

@@ -5,7 +5,7 @@ function useUserAndSave(userAT){
   const [user, setuser] = useState(null);
   useEffect(() => {
     (async () => {
-      const user = (await getUser(userAT?.id)).data.user;
+      const user = (await getUser(userAT?.id)).data;
       setuser(user);
     })();
   }, [userAT]); 

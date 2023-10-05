@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import admin from "@/fireBase/fireBaseAdmin";
-import { getPosts } from "@/services/posts";
 
 const db = admin.firestore();
 
@@ -13,9 +12,8 @@ export async function GET(request, context) {
   try { 
     const { userId } = context.params;
     const user = await db.collection("users").doc(userId).get();
-    const posts = (await getPosts(`/posts/?user-id=${userId}`)).data
      
-    return NextResponse.json({ user: { id: user.id, ...user.data()}, posts });
+    return NextResponse.json({ id: user.id, ...user.data()});
   } catch (error) {
     return new Response(error, { status: 500 });
     

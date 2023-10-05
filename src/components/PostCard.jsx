@@ -13,8 +13,7 @@ export default function PostCard( { post } ) {
   const {data:session} = useSession();
   const userUp = useSpicificUser(post.userUp);
   const [
-    likes,
-    comments,
+    postState,
     isPostLiked,
     handleLikePost,
     isCommentLiked,
@@ -76,7 +75,7 @@ export default function PostCard( { post } ) {
                setLikesView((likesView) => !likesView, setCommentsView(false))
              }
            >
-             {likes.length}
+             {postState.likes.length}
            </button>
          </span>
 
@@ -90,21 +89,21 @@ export default function PostCard( { post } ) {
            className="flex items-center space-x-2 text-purple-600"
          >
            <ChatIcon className="h-6 w-6 text-gray-500" aria-hidden="true" />
-           <span>{comments.length}</span>
+           <span>{postState.comments.length}</span>
          </button>
        </div>
      </div>
      <div className="mt-4">
        {commentView && (
          <Comments
-           comments={comments}
+           comments={postState.comments}
            addCommentToPost={addCommentToPost}
            isCommentLiked={isCommentLiked}
            handleLikeComment={handleLikeComment}
          />
        )}
        {likesView &&
-         likes.map((likeId) => {
+        postState.likes.map((likeId) => {
            return <UserSimpleCard key={likeId} userId={likeId} />;
          })}
      </div>

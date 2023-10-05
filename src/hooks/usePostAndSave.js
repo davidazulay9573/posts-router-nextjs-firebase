@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { getPost,updatePost } from "@/services/posts";
 
 function usePostAndSave(postAT) {
-  const [post, setPost] = useState(null);
+  const [post, setPost] = useState(postAT);
   useEffect(() => {
     (async () => {
-      const post = (await getPost(postAT?.id)).data.post;
+      const post = (await getPost(postAT?.id)).data;
       setPost(post);
     })();
   }, [postAT]);

@@ -6,6 +6,7 @@ import PostCard from "@/components/PostCard";
 import { PencilAltIcon} from "@heroicons/react/solid";
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { getPosts } from "@/services/posts";
 
 export default async function Personal(){
     const session = await getServerSession(authOptions);
@@ -18,7 +19,8 @@ export default async function Personal(){
     if (!usersId.includes(session?.user.id)) {
       redirect("/users");
     }
-    const {user, posts} = (await getUser(session?.user.id)).data
+    const user = (await getUser(session?.user.id)).data
+    const posts = (await getPosts(session?.user.id)).data;
    
     return (
         <div className="flex flex-col items-center m-4">
@@ -27,7 +29,10 @@ export default async function Personal(){
               <>
                 <PostCard key={post.id} post={post} />
                 <div className="flex space-x-4 mt-4">
-                  <Link href={`/personal/${post.id}`} className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded inline-flex items-center">
+                  <Link
+                    href={`/personal/${post.id}`}
+                    className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded inline-flex items-center"
+                  >
                     <PencilAltIcon
                       className="w-5 h-5 mr-2"
                       aria-hidden="true"

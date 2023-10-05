@@ -5,6 +5,6 @@ import { getUser } from "@/services/users";
 
 export default async function EditProfile() {
   const session = await getServerSession(authOptions);
-  const {user}  = (await getUser(session?.user.id)).data
+  const user  = (await getUser(session?.user.id)).data
   return <FormEditProfile user={user} />;
 }

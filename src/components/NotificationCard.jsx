@@ -5,7 +5,6 @@ import dateFormat from "@/utils/dateFormat";
 
 export default function NotificationCard({ notification }) {
   const user = useSpicificUser(notification.userSender);
-
   return (
     <div className="flex items-center justify-between space-x-4 p-4 bg-white rounded-lg shadow hover:shadow-lg transition-shadow duration-300 mx-4 my-2">
       {notification.userSender && (
@@ -20,7 +19,10 @@ export default function NotificationCard({ notification }) {
       )}
 
       <div className="flex flex-col sm:flex-row space-y-1 sm:space-y-0 sm:space-x-4 text-sm text-gray-600">
-        <p>{notification.message}</p>
+        <Link href={notification.link || `/users/${notification.userSender}`}>
+          <p>{notification.message}</p>
+        </Link>
+
         <p className="text-xs sm:text-sm">
           {dateFormat(notification.createdAt)}
         </p>

@@ -15,7 +15,7 @@ export default async function RootLayout({ children }) {
   const session = await getServerSession(authOptions);
   return (
     <html lang="en">
-      <SessionProvider session={session}>
+      <SessionProvider  session={session}>
         <body className="flex flex-col min-h-screen">
           <HeaderNav />
           <div className="flex-grow p-4">{children}</div>

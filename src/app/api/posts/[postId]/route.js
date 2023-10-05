@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { headers } from "next/headers";
 import admin from "@/fireBase/fireBaseAdmin";
-// import { getComments } from "@/services/comments";
 
 const db = admin.firestore();
 
@@ -13,9 +12,9 @@ export async function GET(request, context) {
   try {
      const { postId } = context.params;
      const post = await db.collection("posts").doc(postId).get();
-    //  const comments = (await getComments(`/comments/?post-id=${postId}`)).data
-    
-     return NextResponse.json({post:{ id: post.id, ...post.data() } } );
+   
+  
+     return NextResponse.json({ id: post.id, ...post.data() }  );
     
   } catch (error) {
     return new Response(error,{status:500})

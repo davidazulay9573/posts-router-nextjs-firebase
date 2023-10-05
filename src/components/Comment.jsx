@@ -4,10 +4,12 @@ import { HeartIcon } from "@heroicons/react/solid";
 import dateFormat from "@/utils/dateFormat";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
-
+import { useState } from "react";
+import UserSimpleCard from "./UserSimpleCard";
 function Comment({ comment, isCommentLiked, handleLikeComment }) {
   const userUp = useSpicificUser(comment.userUp)
   const { data: session} = useSession();
+  const [likesView, setLikesView] = useState(false);
   
   return (
     <div className="bg-white dark:bg-gray-800 text-black dark:text-gray-200 p-4 antialiased flex max-w-lg">
@@ -37,7 +39,14 @@ function Comment({ comment, isCommentLiked, handleLikeComment }) {
         {/* </div> */}
         <div className="text-sm ml-4 mt-0.5 text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-700 border border-white dark:border-gray-700 rounded-full float-right -mt-8 mr-0.5 flex shadow items-center ">
           <span className=" flex items-center space-x-2 text-purple-600 text-sm ml-1 pr-1.5 text-gray-500 ">
-            {comment.likes.length}
+            <button
+              onClick={() => {
+                setLikesView((likesView) => !likesView);
+              }}
+            >
+              {" "}
+              {comment.likes.length}
+            </button>
             <button onClick={() => handleLikeComment(comment.id)}>
               <HeartIcon
                 className={`h-4 w-4 ${
@@ -50,6 +59,12 @@ function Comment({ comment, isCommentLiked, handleLikeComment }) {
             </button>
           </span>
         </div>
+      </div>
+      <div className="mt-4">
+        {likesView &&
+          comment.likes.map((likeId) => {
+            return <UserSimpleCard key={likeId} userId={likeId} />;
+          })}
       </div>
     </div>
   );
