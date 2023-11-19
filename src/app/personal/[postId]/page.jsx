@@ -9,8 +9,7 @@ export default async function EditPost({params}){
 
    return (
      <div className="bg-white shadow-sm p-4 rounded-lg">
-       <FormEditPost post={post} />
-      
+       <FormEditPost post={post} />   
      </div>
    );
 }
